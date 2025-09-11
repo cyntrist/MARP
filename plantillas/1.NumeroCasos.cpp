@@ -1,4 +1,3 @@
-
 /*@ <authors>
  *
  * Nombre, apellidos y usuario del juez (TAISXXX) de los autores de la solución.
@@ -7,11 +6,11 @@
 
 #include <iostream>
 #include <fstream>
-#include <...>
+//#include <...>
 
 using namespace std;
 
-#include "..."  // propios o los de las estructuras de datos de clase
+//#include "..."  // propios o los de las estructuras de datos de clase
 
 /*@ <answer>
 
@@ -27,17 +26,12 @@ using namespace std;
 // ================================================================
 //@ <answer>
 
-bool resuelveCaso() {
+void resuelveCaso() {
 	// leer los datos de la entrada
-
-	if (!std::cin)  // fin de la entrada
-		return false;
 
 	// resolver el caso posiblemente llamando a otras funciones
 
 	// escribir la solución
-
-	return true;
 }
 
 //@ </answer>
@@ -52,13 +46,17 @@ int main() {
 	auto cinbuf = std::cin.rdbuf(in.rdbuf());
 #endif
 
-	while (resuelveCaso());
+	int numCasos;
+	std::cin >> numCasos;
+	for (int i = 0; i < numCasos; ++i)
+		resuelveCaso();
 
-// para dejar todo como estaba al principio
+// para dejar todo como estaba al principio y parar antes de salir
 #ifndef DOMJUDGE
 	std::cin.rdbuf(cinbuf);
 	std::cout << "Pulsa Intro para salir..." << std::flush;
 	std::cin.get();
 #endif
+
 	return 0;
 }

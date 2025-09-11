@@ -8,7 +8,6 @@
 #include <iostream>
 #include <fstream>
 #include <...>
-
 using namespace std;
 
 #include "..."  // propios o los de las estructuras de datos de clase
@@ -30,7 +29,7 @@ using namespace std;
 bool resuelveCaso() {
 	// leer los datos de la entrada
 
-	if (!std::cin)  // fin de la entrada
+	if (caso especial)
 		return false;
 
 	// resolver el caso posiblemente llamando a otras funciones
