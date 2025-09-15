@@ -27,27 +27,23 @@ using namespace std;
 
 bool resuelveCaso() {
 	// leer los datos de la entrada
+	char modo;
+	cin >> modo;
 
 	if (!std::cin)  // fin de la entrada
 		return false;
 
 	// resolver el caso posiblemente llamando a otras funciones
-	char modo;
-	std::cin >> modo;
 	if (tolower(modo) == 'n') 
 	{
-		std:cout << "enteros" << std::endl;
-		//BinTree<int> arbol = read_tree();
-		BinTree<int> tree = read_tree<int>(std::cin);
+		cout << "enteros" << endl;
+		BinTree<int> tree = read_tree<int>(cin);
 	}
 	else 
 	{
 		std::cout << "palabras" << std::endl;
-		BinTree<char> tree = read_tree<char>(std::cin);
-
+		BinTree<string> tree = read_tree<string>(cin);
 	}
-	
-
 
 	// escribir la solución
 
