@@ -38,11 +38,13 @@ bool resuelveCaso() {
 	{
 		std:cout << "enteros" << std::endl;
 		//BinTree<int> arbol = read_tree();
+		BinTree<int> tree = read_tree<int>(std::cin);
 	}
 	else 
 	{
 		std::cout << "palabras" << std::endl;
-		BinTree<char> arbol;	
+		BinTree<char> tree = read_tree<char>(std::cin);
+
 	}
 	
 
