@@ -32,6 +32,20 @@ bool resuelveCaso() {
 		return false;
 
 	// resolver el caso posiblemente llamando a otras funciones
+	char modo;
+	std::cin >> modo;
+	if (tolower(modo) == 'n') 
+	{
+		std:cout << "enteros" << std::endl;
+		//BinTree<int> arbol = read_tree();
+	}
+	else 
+	{
+		std::cout << "palabras" << std::endl;
+		BinTree<char> arbol;	
+	}
+	
+
 
 	// escribir la solución
 
@@ -44,7 +58,7 @@ bool resuelveCaso() {
 int main() {
 // ajustes para que cin extraiga directamente de un fichero
 #ifndef DOMJUDGE
-	std::ifstream in("casos.txt");
+	std::ifstream in("input.txt");
 	if (!in.is_open())
 		std::cout << "Error: no se ha podido abrir el archivo de entrada." << std::endl;
 	auto cinbuf = std::cin.rdbuf(in.rdbuf());
