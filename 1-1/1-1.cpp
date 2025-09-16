@@ -25,6 +25,29 @@ using namespace std;
 // ================================================================
 //@ <answer>
 
+template <typename T>
+int esAVL(BinTree<T>& tree, int& min, int& max) 
+{
+	if (tree.empty()) 
+	{
+		return 0;
+	}
+	if (tree.right.empty()) 
+	{
+		int izquierda = esAVL(tree.left());
+		return izquierda;
+	}
+	if (tree.left.empty())
+	{
+		int derecha = esAVL(tree.right());
+		return derecha;
+	}
+
+	int izquierda = esAVL(tree.left());
+	int derecha = esAVL(tree.right());
+	return izquierda - derecha;
+}
+
 bool resuelveCaso() {
 	// leer los datos de la entrada
 	char modo;
