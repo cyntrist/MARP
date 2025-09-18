@@ -135,9 +135,12 @@ protected:
          ++nelems;
          crece = true;
       } else if (menor(e, a->elem)) {
-         crece = inserta(e, a->iz);
-      	 ++a->tam_i;
-         if (crece) reequilibraDer(a);
+      	crece = inserta(e, a->iz);
+      	if (crece)
+        {
+      		reequilibraDer(a);
+      		++a->tam_i; 
+        }
       } else if (menor(a->elem, e)) {
          crece = inserta(e, a->dr);
          if (crece) reequilibraIzq(a);
@@ -158,6 +161,7 @@ protected:
       r2->altura = std::max(altura(r2->iz), altura(r2->dr)) + 1;
       r1->altura = std::max(altura(r1->iz), altura(r1->dr)) + 1;
       r2 = r1;
+		// aquí hay que actualizar tam_i del girado a la derecha de alguna manera que no estoy entendiendo
    }
 
    void rotaIzq(Link & r1) {
@@ -167,6 +171,7 @@ protected:
       r1->altura = std::max(altura(r1->iz), altura(r1->dr)) + 1;
       r2->altura = std::max(altura(r2->iz), altura(r2->dr)) + 1;
       r1 = r2;
+      ++r2->tam_i;
    }
 
    void rotaIzqDer(Link & r3) {
