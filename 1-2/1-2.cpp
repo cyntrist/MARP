@@ -8,46 +8,59 @@
 
 #include <iostream>
 #include <fstream>
- //#include <limits>
-#include <algorithm> 
-#include <cstdlib>   
-#include "bintree.h"
 #include "TreeSet_AVL.h"
-
 using namespace std;
 
 /*@ <answer>
 
-
+ Escribe aquí un comentario general sobre la solución, explicando cómo
+ se resuelve el problema y cuál es el coste de la solución, en función
+ del tamaño del problema.
 
  @ </answer> */
 
 
- // ================================================================
- // Escribe el código completo de tu solución aquí debajo
- // ================================================================
- //@ <answer>
+// ================================================================
+// Escribe el código completo de tu solución aquí debajo
+// ================================================================
+//@ <answer>
 
 template <class T>
 class set_plus : public Set<T>
 {
-	using Nodo = typename Set<T>::Nodo;
 public:
 	T const& kesimo(int k) const 
 	{
-	
+		return 1;
 	}
 };
 
 bool resuelveCaso() {
 	// leer los datos de la entrada
-	char modo;
-	cin >> modo;
+	int N;
+	cin >> N;
 
-	if (!std::cin)  // fin de la entrada
+	if (N == 0)
 		return false;
 
+	set_plus<int> set;
+	for (int i = 0; i < N; i++)
+	{
+		int n;
+		cin >> n;
+		set.insert(n);
+	}
 
+	int M;
+	cin >> M;
+	for (int i = 0; i < M; i++)
+	{
+		int m;
+		cin >> m;
+		cout << set.kesimo(m) << endl;
+	}
+
+	cout << "---\n";
 	return true;
 }
 
@@ -55,7 +68,7 @@ bool resuelveCaso() {
 //  Lo que se escriba dejado de esta línea ya no forma parte de la solución.
 
 int main() {
-	// ajustes para que cin extraiga directamente de un fichero
+// ajustes para que cin extraiga directamente de un fichero
 #ifndef DOMJUDGE
 	std::ifstream in("casos.txt");
 	if (!in.is_open())
@@ -65,7 +78,7 @@ int main() {
 
 	while (resuelveCaso());
 
-	// para dejar todo como estaba al principio
+// para dejar todo como estaba al principio
 #ifndef DOMJUDGE
 	std::cin.rdbuf(cinbuf);
 	std::cout << "Pulsa Intro para salir..." << std::flush;

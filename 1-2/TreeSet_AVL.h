@@ -34,8 +34,10 @@ protected:
       T elem;
       Link iz, dr;
       int altura;
+      int tam_i; 
       TreeNode(T const& e, Link i = nullptr, Link d = nullptr,
-               int alt = 1) : elem(e), iz(i), dr(d), altura(alt) {}
+               int alt = 1, int tam = 1)
+   		: elem(e), iz(i), dr(d), altura(alt), tam_i(tam){}
    };
 
    // puntero a la raíz de la estructura jerárquica de nodos
@@ -134,6 +136,7 @@ protected:
          crece = true;
       } else if (menor(e, a->elem)) {
          crece = inserta(e, a->iz);
+      	 ++a->tam_i;
          if (crece) reequilibraDer(a);
       } else if (menor(a->elem, e)) {
          crece = inserta(e, a->dr);
