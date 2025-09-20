@@ -138,8 +138,8 @@ protected:
       	crece = inserta(e, a->iz);
       	if (crece)
         {
-      		reequilibraDer(a);
       		++a->tam_i; 
+      		reequilibraDer(a);
         }
       } else if (menor(a->elem, e)) {
          crece = inserta(e, a->dr);
@@ -157,21 +157,26 @@ protected:
    void rotaDer(Link & r2) {
       Link r1 = r2->iz;
       r2->iz = r1->dr;
+
+      r2->tam_i = r2->tam_i - r1->tam_i; // !!!!!!!!!!!!!!!!!!!!!!!!
+
       r1->dr = r2;
       r2->altura = std::max(altura(r2->iz), altura(r2->dr)) + 1;
       r1->altura = std::max(altura(r1->iz), altura(r1->dr)) + 1;
       r2 = r1;
-		// aquí hay que actualizar tam_i del girado a la derecha de alguna manera que no estoy entendiendo
    }
 
    void rotaIzq(Link & r1) {
       Link r2 = r1->dr;
       r1->dr = r2->iz;
       r2->iz = r1;
+
+      r2->tam_i = r2->iz->tam_i + r2->tam_i; // !!!!!!!!!!!!!!!!!!!!!!!!
+
       r1->altura = std::max(altura(r1->iz), altura(r1->dr)) + 1;
       r2->altura = std::max(altura(r2->iz), altura(r2->dr)) + 1;
       r1 = r2;
-      ++r2->tam_i;
+      //++r2->tam_i;
    }
 
    void rotaIzqDer(Link & r3) {
@@ -245,6 +250,18 @@ protected:
       return decrece;
    }
 
+    /// KESIMO
+    /// búsqueda binaria en función de k
+    T const& kesimo(Link const& ar, int k) const
+	{
+		if (k > ar->tam_i) // es mayor, buscamos a la derecha y restamos k por tam_i
+	       return kesimo(ar->dr, k - ar->tam_i);
+		if (k < ar->tam_i) // es menor, buscamos a la izquierda
+	       return kesimo(ar->iz, k);
+		// igual -> estamos en k
+   		return ar->elem;
+    }
+
 public:
    // iteradores que recorren los elementos del conjunto de menor a mayor
    class const_iterator {
@@ -315,6 +332,14 @@ public:
 
    const_iterator end() const {
       return const_iterator();
+   }
+
+    /// método auxiliar de llamada externa al método interno
+   T const* k_esimo(int k) const
+   { // retorna punteros porque no he sabido hacer mejor que escriba "??" de otra manera lol
+       if (k > size() || k <= 0)
+           return nullptr; 
+       return &kesimo(raiz, k);
    }
 };
 

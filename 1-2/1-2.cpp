@@ -13,9 +13,11 @@ using namespace std;
 
 /*@ <answer>
 
- Escribe aquí un comentario general sobre la solución, explicando cómo
- se resuelve el problema y cuál es el coste de la solución, en función
- del tamaño del problema.
+el método k_esimo implementa una búsqueda binaria en el árbol en función de k.
+la verdadera dificultad del ejercicio está en implementar tam_i y buscar dónde
+exacto se gestiona el aumento y decremento de tam_i al insertar y rotar
+
+los métodos nuevos están en las líneas 255 y 339 de TreeSet_AVL.h!!!
 
  @ </answer> */
 
@@ -25,15 +27,20 @@ using namespace std;
 // ================================================================
 //@ <answer>
 
-template <class T>
-class set_plus : public Set<T>
-{
-public:
-	T const& kesimo(int k) const 
-	{
-		return 1;
-	}
-};
+// clase al estilo eda para implementar una función pública con la que considerar
+// y llamar a la protegida
+// la he abandonado porque da errores de compilación en el juez
+//template <class T>
+//class set_plus : public Set<T>
+//{
+//public:
+//	T const* k_esimo(int k) const
+//	{
+//		if (k > this->size() || k <= 0)
+//			return nullptr;
+//		return &this->kesimo(this->raiz, k);
+//	}
+//};
 
 bool resuelveCaso() {
 	// leer los datos de la entrada
@@ -43,7 +50,8 @@ bool resuelveCaso() {
 	if (N == 0)
 		return false;
 
-	set_plus<int> set;
+	//set_plus<int> set; // creacion de los arboles
+	Set<int> set; // creacion de los arboles
 	for (int i = 0; i < N; i++)
 	{
 		int n;
@@ -51,13 +59,17 @@ bool resuelveCaso() {
 		set.insert(n);
 	}
 
-	int M;
+	int M; // consultas de los kesimos
 	cin >> M;
 	for (int i = 0; i < M; i++)
 	{
 		int m;
 		cin >> m;
-		cout << set.kesimo(m) << endl;
+		const int* sol = set.k_esimo(m);
+		if (sol == nullptr)
+			cout << "??" << endl;
+		else
+			cout << *sol << endl;
 	}
 
 	cout << "---\n";
