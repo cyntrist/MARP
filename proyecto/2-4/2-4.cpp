@@ -26,13 +26,19 @@ using namespace std;
 struct Pacientes
 {
 	int gravedad; 
-	string nombre;		
+	string nombre;
+
+	//bool operator>(Pacientes const& other)
+	//{
+	//	return this->gravedad > other.gravedad
+	//		|| (this->gravedad == other.gravedad && this->nombre > other.nombre);
+	//}
 };
 
 bool operator<(Pacientes const& a, Pacientes const& b)
 {
-	return b.gravedad < a.gravedad
-		|| (a.gravedad == b.gravedad && b.nombre < a.nombre);
+	return b.gravedad > a.gravedad
+		|| (a.gravedad == b.gravedad && b.nombre > a.nombre);
 }
 
 bool resuelveCaso() {
@@ -43,6 +49,7 @@ bool resuelveCaso() {
 	if (N == 0)
 		return false;
 
+	//priority_queue<Pacientes, vector<Pacientes>, greater<Pacientes>> triaje;
 	priority_queue<Pacientes> triaje;
 	for (int i = 0; i < N; i++)
 	{
@@ -60,8 +67,7 @@ bool resuelveCaso() {
 			if (!triaje.empty())
 			{
 				cout << triaje.top().nombre << '\n';
-				triaje.pop();
-				
+				//triaje.pop();
 			}
 		}
 	}
