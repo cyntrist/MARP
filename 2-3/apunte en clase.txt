@@ -1,0 +1,38 @@
+cola normal de clientes
+cola prioritaria de cajas
+{monedo.libre,id}
+
+struct caja {
+int ocupada,
+int id
+};
+
+bool operator<(Caja const& a, Caja const& b) {
+return b.ocupada < a.ocupada || (a.ocupada == b.ocupada && b.id < a.id)
+}
+
+int N, C, tiempo;
+cin >> N >> C;
+
+...
+
+
+N LOG N
+priority_queu<Caja>cajas;
+for ...
+cajas.push({0,i})
+
+
+C LOG N
+for C
+cin >> tiempo
+auto caja = cajas.top(); cajas.pop();
+caja.ocupada += tiempo;
+cajas.push(caja);
+
+cout << cajas.top().id << '\n';
+
+return true;
+
+coste dependiendo del n Y c 	
+
