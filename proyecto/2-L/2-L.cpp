@@ -36,6 +36,7 @@ struct Instrumento
 	long musicos; // cantidad de musicos con los que cuenta ese instrumento en la orquesta
 	int id; // identificador único por instrumento
 	int partituras = 1; // partituras que comparten entre ellos, minimo una por enunciado
+
 };
 
 //bool operator<(const Instrumento& a, const Instrumento& b)
@@ -46,7 +47,8 @@ struct Instrumento
 bool operator>(const Instrumento& a, const Instrumento& b)
 {
 	return b.musicos/b.partituras > a.musicos/a.partituras
-		|| (a.musicos/a.partituras == b.musicos/b.partituras && b.id > a.id);
+		|| (ceil(a.musicos/a.partituras) == ceil(b.musicos/b.partituras) 
+			&& b.musicos%b.partituras > a.musicos%a.partituras);
 }
 
 
@@ -63,9 +65,10 @@ int resuelve(priority_queue<Instrumento, vector<Instrumento>,
 	}
 
 	// contabilización de partituras
-	auto ins = cola.top();
-	int maxMus = ins.musicos/ins.partituras;
-	//if (ins.musicos % ins.partituras < 1)
+	const auto& ins = cola.top();
+	float PUTO =ins.musicos/ins.partituras;
+	auto maxMus = ceil(ins.musicos/ins.partituras);
+	//if (ins.musicos % ins.partituras > 0)
 	//	maxMus++;
 
 	//for (int i = 0; i < cola.size(); i++)
