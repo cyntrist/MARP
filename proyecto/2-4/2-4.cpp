@@ -23,23 +23,22 @@ using namespace std;
  // ================================================================
  //@ <answer>
 
-struct Pacientes
-{
-	int gravedad; 
+struct Paciente {
+	int gravedad;
 	string nombre;
-
-	//bool operator>(Pacientes const& other)
-	//{
-	//	return this->gravedad > other.gravedad
-	//		|| (this->gravedad == other.gravedad && this->nombre > other.nombre);
-	//}
+	int tiempo;
 };
 
-bool operator<(Pacientes const& a, Pacientes const& b)
-{
-	return b.gravedad > a.gravedad
-		|| (a.gravedad == b.gravedad && b.nombre > a.nombre);
-}
+bool operator<(Paciente const& a, Paciente const& b) {
+	return b.gravedad < a.gravedad ||
+		(a.gravedad == b.gravedad && b.tiempo < a.tiempo);
+};
+
+bool operator>(Paciente const& a, Paciente const& b) {
+	return b.gravedad > a.gravedad ||
+		(a.gravedad == b.gravedad && b.tiempo < a.tiempo) ||
+		(a.gravedad == b.gravedad && b.tiempo == a.tiempo && b.nombre > a.nombre);
+};
 
 bool resuelveCaso() {
 	// leer los datos de la entrada
@@ -50,7 +49,7 @@ bool resuelveCaso() {
 		return false;
 
 	//priority_queue<Pacientes, vector<Pacientes>, greater<Pacientes>> triaje;
-	priority_queue<Pacientes> triaje;
+	priority_queue<Paciente, vector<Paciente>, greater<Paciente>> triaje;
 	for (int i = 0; i < N; i++)
 	{
 		char E;
@@ -60,15 +59,12 @@ bool resuelveCaso() {
 			string nombre;
 			long gravedad;
 			cin >> nombre >> gravedad;
-			triaje.push({gravedad, nombre});
+			triaje.push({gravedad, nombre, i});
 		}
-		else if (E == 'A')
+		else if (E == 'A' && !triaje.empty())
 		{
-			if (!triaje.empty())
-			{
-				cout << triaje.top().nombre << '\n';
-				//triaje.pop();
-			}
+			cout << triaje.top().nombre << '\n';
+			triaje.pop();
 		}
 	}
 	cout << "---\n";
