@@ -23,41 +23,47 @@ using namespace std;
  // ================================================================
  //@ <answer>
 
-struct Caja
-{
-	int ocupada; 
-	int id;		 
-
+struct Comic {
+	int id; // identificador
+	int pos; // posición en su pila
 };
 
-bool operator<(Caja const& a, Caja const& b)
+bool operator>(Comic const& a, Comic const& b) {
+	return b.pos > a.pos ||
+		(a.pos == b.pos && b.id > a.id);
+};
+
+int resuelve(priority_queue<Comic, vector<Comic>, greater<Comic>> comics)
 {
-	return b.ocupada < a.ocupada || (a.ocupada == b.ocupada && b.id < a.id);
+	return -1;
 }
 
 bool resuelveCaso() {
 	// leer los datos de la entrada
-	int N, C, tiempo;
-	cin >> N >> C;
+
+	if (!std::cin)  // fin de la entrada
+		return false;
+
+	int N = -1;
+	cin >> N;
 
 	if (N == 0)
 		return false;
 
-	priority_queue<Caja> cajas;
-	for (int i = 1; i <= N; i++)
+	priority_queue<Comic, vector<Comic>, greater<Comic>> comics;
+	for (int i = 0; i < N; i++) // por cada pila
 	{
-		cajas.push({0, i});
+		int K = 0;
+		cin >> K;
+		for (int j = 0; j < K; j++)
+		{
+			int id;
+			cin >> id;
+			comics.push({id, K - j});
+		}
 	}
 
-	for (int i = 0; i < C; i++)
-	{
-		cin >> tiempo;
-		auto caja = cajas.top(); cajas.pop();
-		caja.ocupada += tiempo;
-		cajas.push(caja);
-	}
-
-	cout << cajas.top().id << '\n';
+	cout << resuelve(comics) << endl;
 
 	return true;
 }
