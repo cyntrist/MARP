@@ -24,16 +24,32 @@ using namespace std;
  //@ <answer>
 
 struct Comic {
-	int id; // identificador
 	int pos; // posición en su pila
+	int id; // identificador
+
+	//bool operator<(Comic const& other) const {
+	//	return pos < other.pos || (pos == other.pos && id < other.id);
+	//}
+
+	//bool operator>(Comic const& other) const {
+	//	return pos > other.pos || (pos == other.pos && id > other.id);
+	//}
 };
+
+//bool operator>(Comic const& a, Comic const& b) {
+//	return b.pos > a.pos || (a.pos == b.pos && b.id > a.id);
+//};
+
+bool operator<(Comic const& a, Comic const& b) {
+	return a.pos < b.pos; //|| (a.pos == b.pos && a.id < b.id);
+}
 
 bool operator>(Comic const& a, Comic const& b) {
-	return b.pos > a.pos ||
-		(a.pos == b.pos && b.id > a.id);
-};
+	return a.pos > b.pos; //|| (a.pos == b.pos && a.id > b.id);
+}
 
-int resuelve(priority_queue<Comic, vector<Comic>, greater<Comic>> comics)
+//int resuelve(priority_queue<Comic, vector<Comic>, greater<Comic>> comics)
+int resuelve(priority_queue<Comic>& comics)
 {
 	return -1;
 }
@@ -50,7 +66,8 @@ bool resuelveCaso() {
 	if (N == 0)
 		return false;
 
-	priority_queue<Comic, vector<Comic>, greater<Comic>> comics;
+	priority_queue<Comic> comics;
+	//priority_queue<Comic, vector<Comic>, greater<Comic>> comics;
 	for (int i = 0; i < N; i++) // por cada pila
 	{
 		int K = 0;
@@ -59,7 +76,7 @@ bool resuelveCaso() {
 		{
 			int id;
 			cin >> id;
-			comics.push({id, K - j});
+			comics.push({j, id});
 		}
 	}
 
