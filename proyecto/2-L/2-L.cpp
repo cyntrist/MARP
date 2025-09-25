@@ -8,6 +8,7 @@
 #include <fstream>
 //#include <algorithm>
 //#include <limits>
+#include <cmath>
 #include <queue>
 using namespace std;
 
@@ -33,7 +34,9 @@ using namespace std;
 
 struct Instrumento
 {
-	long musicos; // cantidad de musicos con los que cuenta ese instrumento en la orquesta
+	// double para tener en cuenta que 4.1 < 4.2 y que ambos siguen siendo 5 personas por partitura en la cola de prioridad
+	// ceil() en la salida para reflejarlo
+	double musicos; // cantidad de musicos con los que cuenta ese instrumento en la orquesta
 	int id; // identificador único por instrumento
 	int partituras = 1; // partituras que comparten entre ellos, minimo una por enunciado
 
@@ -47,36 +50,26 @@ struct Instrumento
 bool operator>(const Instrumento& a, const Instrumento& b)
 {
 	return b.musicos/b.partituras > a.musicos/a.partituras
-		|| (ceil(a.musicos/a.partituras) == ceil(b.musicos/b.partituras) 
-			&& b.musicos%b.partituras > a.musicos%a.partituras);
+		|| (a.musicos/a.partituras == b.musicos/b.partituras 
+			&& b.id > a.id);
 }
 
 
-// O(n) siendo n la resta entre las partituras disponibles y el número de instrumentos
+// O(log n * (p - n)) siendo n el número de instrumentos y p el número de partituras disponibles
 int resuelve(priority_queue<Instrumento, vector<Instrumento>, 
 			greater<Instrumento>>& cola, int p)
 {
 	// reparto de partituras
-	for (unsigned int i = 0; i < p - cola.size(); i++) // la resta debido a si toca más de una por instrumento si no es redundante
+	for (unsigned int i = 0; i < p - cola.size(); i++) // O(1); la resta debido a si toca más de una por instrumento si no es redundante
 	{
-		auto ins = cola.top(); cola.pop(); // se le da otra partitura a la más prioritaria
+		auto ins = cola.top(); cola.pop(); // O(1)x2; se le da otra partitura a la más prioritaria
 		ins.partituras++;
-		cola.push(ins);
+		cola.push(ins); // O(log n)
 	}
 
 	// contabilización de partituras
-	const auto& ins = cola.top();
-	float PUTO =ins.musicos/ins.partituras;
+	const auto& ins = cola.top(); // O(1)
 	auto maxMus = ceil(ins.musicos/ins.partituras);
-	//if (ins.musicos % ins.partituras > 0)
-	//	maxMus++;
-
-	//for (int i = 0; i < cola.size(); i++)
-	//{
-	//	auto ins = cola.top(); cola.pop();
-	//	if (ins.musicos/ins.partituras > maxMus)
-	//		maxMus = ins.musicos/ins.partituras;
-	//}
 
 	return maxMus;
 }
@@ -94,7 +87,7 @@ bool resuelveCaso()
 	priority_queue<Instrumento, vector<Instrumento>, greater<Instrumento>> cola; // de máximos
 	for (int i = 0; i < N; i++)
 	{
-		int m;
+		double m;
 		cin >> m;
 		cola.push({m, i});
 	}
