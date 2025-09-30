@@ -68,16 +68,18 @@ bool resuelveCaso() {
 
 	}
 
-	int puesto = 1;	
-	while (disponibles.top().id != minimo) {
-
-		auto& pila = pilas[disponibles.top().pila];
+	int puesto = 1;
+	Comic mejor = disponibles.top();
+	while (mejor.id != minimo) 
+	{
+		auto& pila = pilas[mejor.pila];
 		disponibles.pop(); // vendido!
 		if (!pila.empty()) 
 		{	
 			disponibles.push(pila.top());
 			pila.pop();
 		}
+		mejor = disponibles.top();
 		puesto++;
 	}
 
