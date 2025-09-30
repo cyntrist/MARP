@@ -9,6 +9,7 @@
 #include <iostream>
 #include <fstream>
 #include <queue>
+#include <stack>
 using namespace std;
 
 /*@ <answer>
@@ -24,63 +25,63 @@ using namespace std;
  //@ <answer>
 
 struct Comic {
-	int pos; // posición en su pila
 	int id; // identificador
-
-	//bool operator<(Comic const& other) const {
-	//	return pos < other.pos || (pos == other.pos && id < other.id);
-	//}
-
-	//bool operator>(Comic const& other) const {
-	//	return pos > other.pos || (pos == other.pos && id > other.id);
-	//}
+	int pila; // numero de su pila
 };
 
-//bool operator>(Comic const& a, Comic const& b) {
-//	return b.pos > a.pos || (a.pos == b.pos && b.id > a.id);
-//};
+bool operator>(const Comic& a, const Comic& b) {
 
-bool operator<(Comic const& a, Comic const& b) {
-	return a.pos < b.pos; //|| (a.pos == b.pos && a.id < b.id);
-}
-
-bool operator>(Comic const& a, Comic const& b) {
-	return a.pos > b.pos; //|| (a.pos == b.pos && a.id > b.id);
-}
-
-//int resuelve(priority_queue<Comic, vector<Comic>, greater<Comic>> comics)
-int resuelve(priority_queue<Comic>& comics)
-{
-	return -1;
+	return a.id > b.id;
 }
 
 bool resuelveCaso() {
-	// leer los datos de la entrada
 
-	if (!std::cin)  // fin de la entrada
-		return false;
-
-	int N = -1;
+	int N;
 	cin >> N;
 
-	if (N == 0)
+	if (!std::cin)  
 		return false;
 
-	priority_queue<Comic> comics;
-	//priority_queue<Comic, vector<Comic>, greater<Comic>> comics;
-	for (int i = 0; i < N; i++) // por cada pila
-	{
-		int K = 0;
+	vector<stack<Comic>> pilas;
+	priority_queue<Comic, vector<Comic>, greater<Comic>> disponibles;
+	int minimo = -1;
+
+	for (int i = 0; i < N; i++) {
+		int K;
 		cin >> K;
-		for (int j = 0; j < K; j++)
-		{
-			int id;
-			cin >> id;
-			comics.push({j, id});
+
+		stack<Comic> pila;
+		for (int j = 0; j < K; j++) {
+			int num;
+			cin >> num;
+			if (num < minimo || minimo == -1)
+				minimo = num;
+			pila.push({ num, i });
 		}
+		pilas.push_back(pila);
 	}
 
-	cout << resuelve(comics) << endl;
+	for (auto& pila : pilas)
+	{
+		disponibles.push(pila.top());
+		pila.pop();
+
+	}
+
+	int puesto = 1;	
+	while (disponibles.top().id != minimo) {
+
+		auto& pila = pilas[disponibles.top().pila];
+		disponibles.pop(); // vendido!
+		if (!pila.empty()) 
+		{	
+			disponibles.push(pila.top());
+			pila.pop();
+		}
+		puesto++;
+	}
+
+	cout << puesto << '\n';
 
 	return true;
 }
