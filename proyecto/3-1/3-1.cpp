@@ -8,8 +8,8 @@
 
 #include <iostream>
 #include <fstream>
-#include <queue>
-#include <stack>
+#include "IndexPQ.h"
+#include <string>
 using namespace std;
 
 /*@ <answer>
@@ -24,66 +24,37 @@ using namespace std;
  // ================================================================
  //@ <answer>
 
-struct Comic {
-	int id; // identificador
-	int pila; // numero de su pila
+struct Pajaro {
+	long edad;
 };
 
-bool operator>(const Comic& a, const Comic& b) {
+bool operator>(const Pajaro& a, const Pajaro& b) {
 
-	return a.id > b.id;
+	return a.edad > b.edad;
+}
+
+bool operator<(const Pajaro& a, const Pajaro& b) {
+
+	return a.edad < b.edad;
 }
 
 bool resuelveCaso() {
+	int N; 
+	long primero;
+	cin >> primero >> N;
 
-	int N;
-	cin >> N;
-
-	if (!std::cin)  
+	if (primero == 0 || N == 0)  
 		return false;
 
-	vector<stack<Comic>> pilas;
-	priority_queue<Comic, vector<Comic>, greater<Comic>> disponibles;
-	int minimo = -1;
-
-	for (int i = 0; i < N; i++) {
-		int K;
-		cin >> K;
-
-		stack<Comic> pila;
-		for (int j = 0; j < K; j++) {
-			int num;
-			cin >> num;
-			if (num < minimo || minimo == -1)
-				minimo = num;
-			pila.push({ num, i });
-		}
-		pilas.push_back(pila);
-	}
-
-	for (auto& pila : pilas)
+	IndexPQ<int, Pajaro> cola;
+	for (int i = 0; i < N; i++)
 	{
-		disponibles.push(pila.top());
-		pila.pop();
-
+		long edad;
+		cin >> edad;
+		cola.push(i, {edad});
+		cout << cola.priority(cola.size()/2 + 1).edad << endl;
 	}
 
-	int puesto = 1;
-	Comic mejor = disponibles.top();
-	while (mejor.id != minimo) 
-	{
-		auto& pila = pilas[mejor.pila];
-		disponibles.pop(); // vendido!
-		if (!pila.empty()) 
-		{	
-			disponibles.push(pila.top());
-			pila.pop();
-		}
-		mejor = disponibles.top();
-		puesto++;
-	}
-
-	cout << puesto << '\n';
 
 	return true;
 }
