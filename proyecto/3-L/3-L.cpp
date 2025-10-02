@@ -9,6 +9,8 @@
 #include <iostream>
 #include <fstream>
 #include "IndexPQ.h"
+#include <map>
+#include <string>
 using namespace std;
 
 /*@ <answer>
@@ -25,31 +27,41 @@ using namespace std;
 
 struct Canal {
 	int id; 
-	int minutos; 
+	int audiencia; 
 };
 
 bool operator>(const Canal& a, const Canal& b) {
 
-	return a.id > b.id;
+	return a.audiencia > b.audiencia || (a.audiencia == b.audiencia && a.id < b.id);
+}
+
+bool operator<(const Canal& a, const Canal& b) {
+
+	return a.audiencia < b.audiencia || (a.audiencia == b.audiencia && a.id > b.id);
 }
 
 bool resuelveCaso() {
 
-	if (!std::cin)  
-		return false;
-
 	int D, C, N; // D: duración en mins, C: cantidad de canales, N: número de actualizaciones
 	cin >> D >> C >> N;
 
+	if (!std::cin)  
+		return false;
 
-	IndexPQ<Canal> cola;
+	IndexPQ<int, Canal, greater<Canal>> cola;
+	map<int, int> mapa;
+
 	for (int i = 0; i < C; i++)
 	{ // audiencias minuto 0 (iniciales) de cada canal
-		int min0 = 0;
-		cin >> min0;
-		///
+		int audienciaMin0 = 0;
+		cin >> audienciaMin0;
+		Canal c = {i + 1, audienciaMin0};
+		cola.push(i, c);
+		//mapa[i + 1] = 0;
 	}
 
+	int minAnt = 0;
+	Canal topAnterior = cola.top().prioridad;
 	for (int i = 0; i < N; i++)
 	{ // cada actualización
 		int minAct, canal;
@@ -57,13 +69,31 @@ bool resuelveCaso() {
 
 		while (canal != -1)
 		{
-			int mins;
-			cin >> mins >> canal;
-			///
+			int audiencia;
+			cin >> audiencia;
+			int mins = minAct - minAnt;
+
+			//if (audiencia > topAnterior.audiencia)
+			//{
+			//	mapa[topAnterior.id] += mins;
+			//}
+			//else
+			//{
+			//	mapa[canal - 1] += mins;
+			//}
+
+			mapa[topAnterior.id - 1] += mins;
+			topAnterior = cola.top().prioridad;
+			cola.update(canal - 1, {canal, audiencia});
+			cin >> canal;
 		}
-		///
+		minAnt = minAct;
 	}
 
+	for (const auto& canal : mapa)
+	{
+		cout << to_string(canal.first + 1) << " " << canal.second << endl;
+	}
 
 	cout << "---\n";
 	return true;
