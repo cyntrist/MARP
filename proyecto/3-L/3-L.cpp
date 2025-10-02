@@ -8,8 +8,7 @@
 
 #include <iostream>
 #include <fstream>
-#include <queue>
-#include <stack>
+#include "IndexPQ.h"
 using namespace std;
 
 /*@ <answer>
@@ -18,11 +17,15 @@ using namespace std;
 
  @ </answer> */
 
+
+ // ================================================================
+ // Escribe el código completo de tu solución aquí debajo
+ // ================================================================
  //@ <answer>
 
-struct Comic {
-	int id; // identificador
-	int pila; // numero de su pila
+struct Canal {
+	int id; 
+	int minutos; 
 };
 
 bool operator>(const Comic& a, const Comic& b) {
@@ -32,55 +35,37 @@ bool operator>(const Comic& a, const Comic& b) {
 
 bool resuelveCaso() {
 
-	int N;
-	cin >> N;
-
 	if (!std::cin)  
 		return false;
 
-	vector<stack<Comic>> pilas;
-	priority_queue<Comic, vector<Comic>, greater<Comic>> disponibles;
-	int minimo = -1;
+	int D, C, N; // D: duración en mins, C: cantidad de canales, N: número de actualizaciones
+	cin >> D >> C >> N;
 
-	for (int i = 0; i < N; i++) {
-		int K;
-		cin >> K;
 
-		stack<Comic> pila;
-		for (int j = 0; j < K; j++) {
-			int num;
-			cin >> num;
-			if (num < minimo || minimo == -1)
-				minimo = num;
-			pila.push({ num, i });
+	IndexPQ<int, Canal> cola;
+	for (int i = 0; i < C; i++)
+	{ // audiencias minuto 0 (iniciales) de cada canal
+		int min0 = 0;
+		cin >> min0;
+		///
+	}
+
+	for (int i = 0; i < N; i++)
+	{ // cada actualización
+		int minAct, canal;
+		cin >> minAct >> canal;
+
+		while (canal != -1)
+		{
+			int mins;
+			cin >> mins >> canal;
+			///
 		}
-		pilas.push_back(pila);
+		///
 	}
 
-	for (auto& pila : pilas)
-	{
-		disponibles.push(pila.top());
-		pila.pop();
 
-	}
-
-	int puesto = 1;
-	Comic mejor = disponibles.top();
-	while (mejor.id != minimo) 
-	{
-		auto& pila = pilas[mejor.pila];
-		disponibles.pop(); // vendido!
-		if (!pila.empty()) 
-		{	
-			disponibles.push(pila.top());
-			pila.pop();
-		}
-		mejor = disponibles.top();
-		puesto++;
-	}
-
-	cout << puesto << '\n';
-
+	cout << "---\n";
 	return true;
 }
 
