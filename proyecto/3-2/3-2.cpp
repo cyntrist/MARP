@@ -10,7 +10,7 @@
 #include <fstream>
 #include <queue>
 
-#include "../3-1/IndexPQ.h"
+#include "IndexPQ.h"
 using namespace std;
 
 /*@ <answer>
@@ -33,7 +33,7 @@ struct Pais
 
 bool operator<(Pais const& a, Pais const& b)
 {
-	return b.puntos > a.puntos || (b.puntos == a.puntos && b.nombre > a.nombre);
+	return b.puntos < a.puntos || (b.puntos == a.puntos && b.nombre > a.nombre);
 }
 
 bool resuelveCaso() {
@@ -43,14 +43,15 @@ bool resuelveCaso() {
 	if (!cin)  
 		return false;
 
-	IndexPQ<string, int, greater<>> cola;
+	IndexPQ<string, Pais> cola;
 	for (int i = 0; i < N; i++)
 	{
 		string evento;
 		cin >> evento;
 		if (evento == "?")
 		{
-			cout << cola.top().elem << " " << cola.top().prioridad << endl;
+			if (!cola.empty())
+				cout << cola.top().elem << " " << cola.top().prioridad.puntos << endl;
 		}
 		else
 		{
@@ -58,17 +59,16 @@ bool resuelveCaso() {
 			cin >> puntos;
 			try
 			{
-				puntos += cola.priority(evento);
+				puntos += cola.priority(evento).puntos;
 			}
 			catch (...)
 			{
 				// si no existe lo añadira normal a continuacion no hace falta gestion de error
 			}
-			cola.update(evento, puntos);
+			cola.update(evento, {puntos, evento});
 		}
 	}
-	auto top = cola.top();
-	cout << "---" << endl;
+	cout << "---\n";
 	return true;
 }
 

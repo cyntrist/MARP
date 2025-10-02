@@ -16,3 +16,9 @@ Germany 10
 ?
 Spain 15
 ?
+5
+Spain 10
+Italy 10
+Spain 10
+Italy 10
+?
