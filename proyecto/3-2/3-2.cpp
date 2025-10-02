@@ -56,6 +56,14 @@ bool resuelveCaso() {
 		{
 			int puntos;
 			cin >> puntos;
+			try
+			{
+				puntos += cola.priority(evento);
+			}
+			catch (...)
+			{
+				// si no existe lo añadira normal a continuacion no hace falta gestion de error
+			}
 			cola.update(evento, puntos);
 		}
 	}
