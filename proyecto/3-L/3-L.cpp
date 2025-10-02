@@ -48,7 +48,7 @@ bool resuelveCaso() {
 	if (!std::cin)  
 		return false;
 
-	IndexPQ<int, Canal, greater<Canal>> cola;
+	IndexPQ<int, Canal, greater<>> cola;
 	map<int, int> mapa;
 
 	for (int i = 0; i < C; i++)
@@ -57,7 +57,6 @@ bool resuelveCaso() {
 		cin >> audienciaMin0;
 		Canal c = {i + 1, audienciaMin0};
 		cola.push(i, c);
-		//mapa[i + 1] = 0;
 	}
 
 	int minAnt = 0;
@@ -81,11 +80,15 @@ bool resuelveCaso() {
 		}
 	}
 
-	for (const auto& canal : mapa)
-	{
-		cout << to_string(canal.first + 1) << " " << canal.second << endl;
-	}
+	// actualización final?????????????????????????
+	int mins = D - minAnt;
+	mapa[topAnterior.id - 1] += mins;
 
+	// salida
+	for (const auto& canal : mapa)
+		cout << to_string(canal.first + 1) << " " << canal.second << endl;
+
+	// zzz
 	cout << "---\n";
 	return true;
 }
