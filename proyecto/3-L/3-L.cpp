@@ -67,27 +67,18 @@ bool resuelveCaso() {
 		int minAct, canal;
 		cin >> minAct >> canal;
 
+		int mins = minAct - minAnt;
+		mapa[topAnterior.id - 1] += mins;
+		minAnt = minAct;
+
 		while (canal != -1)
 		{
 			int audiencia;
 			cin >> audiencia;
-			int mins = minAct - minAnt;
-
-			//if (audiencia > topAnterior.audiencia)
-			//{
-			//	mapa[topAnterior.id] += mins;
-			//}
-			//else
-			//{
-			//	mapa[canal - 1] += mins;
-			//}
-
-			mapa[topAnterior.id - 1] += mins;
-			topAnterior = cola.top().prioridad;
 			cola.update(canal - 1, {canal, audiencia});
+			topAnterior = cola.top().prioridad;
 			cin >> canal;
 		}
-		minAnt = minAct;
 	}
 
 	for (const auto& canal : mapa)
