@@ -44,7 +44,7 @@ private:
    
 public:
    IndexPQ(Comparator c = Comparator()) :
-       array(1), antes(c) {}
+       array(0), antes(c) {}
    
    void push(ID e, T const& p) {
       if (posiciones.count(e))
@@ -134,3 +134,4 @@ private:
    }
    
 };
+#endif /* INDEXPQ_H_ */

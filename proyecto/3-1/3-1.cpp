@@ -8,6 +8,8 @@
 
 #include <iostream>
 #include <fstream>
+#include <queue>
+
 #include "IndexPQ.h"
 #include <string>
 using namespace std;
@@ -24,38 +26,54 @@ using namespace std;
  // ================================================================
  //@ <answer>
 
-struct Pajaro {
-	long edad;
-};
-
-bool operator>(const Pajaro& a, const Pajaro& b) {
-
-	return a.edad > b.edad;
-}
-
-bool operator<(const Pajaro& a, const Pajaro& b) {
-
-	return a.edad < b.edad;
-}
-
 bool resuelveCaso() {
 	int N; 
-	long primero;
-	cin >> primero >> N;
+	long numero;
+	cin >> numero >> N;
 
-	if (primero == 0 || N == 0)  
+	if (numero == 0 || N == 0)  
 		return false;
 
-	IndexPQ<int, Pajaro> cola;
+	priority_queue<long, vector<long>, less<long>> izq;
+	priority_queue<long, vector<long>, greater<long>> der;
+
+	der.push(numero);
 	for (int i = 0; i < N; i++)
 	{
-		long edad;
-		cin >> edad;
-		cola.push(i, {edad});
-		cout << cola.priority(cola.size()/2 + 1).edad << endl;
+		cin >> numero;
+		if (numero < der.top())
+			izq.push(numero);
+		else
+			der.push(numero);
+
+		if (izq.size() > der.size())
+		{
+			der.push(izq.top()); izq.pop();
+		}
+		else if (der.size() > izq.size() + 1)
+		{
+			izq.push(der.top()); der.pop();
+		}
+
+		cin >> numero;
+		if (numero < der.top())
+			izq.push(numero);
+		else
+			der.push(numero);
+
+		if (izq.size() > der.size())
+		{
+			der.push(izq.top()); izq.pop();
+		}
+		else if (der.size() > izq.size() + 1)
+		{
+			izq.push(der.top()); der.pop();
+		}
+
+
+		cout << der.top() << " ";
 	}
-
-
+	cout << endl;
 	return true;
 }
 
