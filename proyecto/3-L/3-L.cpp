@@ -28,7 +28,7 @@ struct Canal {
 	int minutos; 
 };
 
-bool operator>(const Comic& a, const Comic& b) {
+bool operator>(const Canal& a, const Canal& b) {
 
 	return a.id > b.id;
 }
@@ -42,7 +42,7 @@ bool resuelveCaso() {
 	cin >> D >> C >> N;
 
 
-	IndexPQ<int, Canal> cola;
+	IndexPQ<Canal> cola;
 	for (int i = 0; i < C; i++)
 	{ // audiencias minuto 0 (iniciales) de cada canal
 		int min0 = 0;
