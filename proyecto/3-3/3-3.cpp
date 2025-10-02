@@ -1,19 +1,94 @@
-// 3-3.cpp : Este archivo contiene la función "main". La ejecución del programa comienza y termina ahí.
-//
+
+/*@ <authors>
+ *
+ * Cynthia Tristán Álvarez
+ * MARP62
+ *
+ *@ </authors> */
 
 #include <iostream>
+#include <fstream>
+#include <queue>
+using namespace std;
 
-int main()
+/*@ <answer>
+
+
+
+ @ </answer> */
+
+
+ // ================================================================
+ // Escribe el código completo de tu solución aquí debajo
+ // ================================================================
+ //@ <answer>
+
+struct Tarea
 {
-    std::cout << "Hello World!\n";
+	bool periodica;
+	int ini, fin, intervalo;
+};
+
+bool operator<(Tarea const& a, Tarea const& b)
+{
+	return b.ini < a.ini;
 }
 
-// Ejecutar programa: Ctrl + F5 o menú Depurar > Iniciar sin depurar
-// Depurar programa: F5 o menú Depurar > Iniciar depuración
+bool resuelveCaso() {
+	int N, M, T;
+	cin >> N >> M >> T;
 
-// Sugerencias para primeros pasos: 1. Use la ventana del Explorador de soluciones para agregar y administrar archivos
-//   2. Use la ventana de Team Explorer para conectar con el control de código fuente
-//   3. Use la ventana de salida para ver la salida de compilación y otros mensajes
-//   4. Use la ventana Lista de errores para ver los errores
-//   5. Vaya a Proyecto > Agregar nuevo elemento para crear nuevos archivos de código, o a Proyecto > Agregar elemento existente para agregar archivos de código existentes al proyecto
-//   6. En el futuro, para volver a abrir este proyecto, vaya a Archivo > Abrir > Proyecto y seleccione el archivo .sln
+	if (!cin)  
+		return false;
+
+	priority_queue<Tarea> cola;
+	int ini, fin, intervalo;
+	for (int i = 0; i < N; ++i)
+	{
+		cin >> ini >> fin;
+		cola.push({false, ini, fin, 0});
+	}
+
+	for (int i = 0; i < M; ++i)
+	{
+		cin >> ini >> fin >> intervalo;
+		cola.push({true, ini, fin, intervalo});
+	}
+
+	bool conflicto = false;
+	int ocupado = 0;
+	while (!conflicto && !cola.empty() && cola.top().ini < T)
+	{
+		auto [periodica, ini, fin, intervalo]  = cola.top(); cola.pop();
+		conflicto = ini < ocupado;
+		ocupado = fin;
+		if (periodica)
+			cola.push({true, ini + intervalo, fin + intervalo, intervalo});
+	}
+
+	cout << (conflicto ? "SI" : "NO") << endl ;
+	return true;
+}
+
+//@ </answer>
+//  Lo que se escriba dejado de esta línea ya no forma parte de la solución.
+
+int main() {
+	// ajustes para que cin extraiga directamente de un fichero
+#ifndef DOMJUDGE
+	std::ifstream in("casos.txt");
+	if (!in.is_open())
+		std::cout << "Error: no se ha podido abrir el archivo de entrada." << std::endl;
+	auto cinbuf = std::cin.rdbuf(in.rdbuf());
+#endif
+
+	while (resuelveCaso());
+
+	// para dejar todo como estaba al principio
+#ifndef DOMJUDGE
+	std::cin.rdbuf(cinbuf);
+	std::cout << "Pulsa Intro para salir..." << std::flush;
+	std::cin.get();
+#endif
+	return 0;
+}

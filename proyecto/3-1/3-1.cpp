@@ -9,9 +9,7 @@
 #include <iostream>
 #include <fstream>
 #include <queue>
-
 #include "IndexPQ.h"
-#include <string>
 using namespace std;
 
 /*@ <answer>

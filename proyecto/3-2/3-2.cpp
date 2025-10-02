@@ -1,19 +1,88 @@
-// 3-2.cpp : Este archivo contiene la función "main". La ejecución del programa comienza y termina ahí.
-//
+
+/*@ <authors>
+ *
+ * Cynthia Tristán Álvarez
+ * MARP62
+ *
+ *@ </authors> */
 
 #include <iostream>
+#include <fstream>
+#include <queue>
 
-int main()
+#include "../3-1/IndexPQ.h"
+using namespace std;
+
+/*@ <answer>
+
+
+
+ @ </answer> */
+
+
+ // ================================================================
+ // Escribe el código completo de tu solución aquí debajo
+ // ================================================================
+ //@ <answer>
+
+struct Pais
 {
-    std::cout << "Hello World!\n";
+	int puntos;
+	string nombre;
+};
+
+bool operator<(Pais const& a, Pais const& b)
+{
+	return b.puntos > a.puntos || (b.puntos == a.puntos && b.nombre > a.nombre);
 }
 
-// Ejecutar programa: Ctrl + F5 o menú Depurar > Iniciar sin depurar
-// Depurar programa: F5 o menú Depurar > Iniciar depuración
+bool resuelveCaso() {
+	int N;
+	cin >> N;
 
-// Sugerencias para primeros pasos: 1. Use la ventana del Explorador de soluciones para agregar y administrar archivos
-//   2. Use la ventana de Team Explorer para conectar con el control de código fuente
-//   3. Use la ventana de salida para ver la salida de compilación y otros mensajes
-//   4. Use la ventana Lista de errores para ver los errores
-//   5. Vaya a Proyecto > Agregar nuevo elemento para crear nuevos archivos de código, o a Proyecto > Agregar elemento existente para agregar archivos de código existentes al proyecto
-//   6. En el futuro, para volver a abrir este proyecto, vaya a Archivo > Abrir > Proyecto y seleccione el archivo .sln
+	if (!cin)  
+		return false;
+
+	IndexPQ<string, int, greater<>> cola;
+	for (int i = 0; i < N; i++)
+	{
+		string evento;
+		cin >> evento;
+		if (evento == "?")
+		{
+			cout << cola.top().elem << " " << cola.top().prioridad << endl;
+		}
+		else
+		{
+			int puntos;
+			cin >> puntos;
+			cola.update(evento, puntos);
+		}
+	}
+	auto top = cola.top();
+	cout << "---" << endl;
+	return true;
+}
+
+//@ </answer>
+//  Lo que se escriba dejado de esta línea ya no forma parte de la solución.
+
+int main() {
+	// ajustes para que cin extraiga directamente de un fichero
+#ifndef DOMJUDGE
+	std::ifstream in("casos.txt");
+	if (!in.is_open())
+		std::cout << "Error: no se ha podido abrir el archivo de entrada." << std::endl;
+	auto cinbuf = std::cin.rdbuf(in.rdbuf());
+#endif
+
+	while (resuelveCaso());
+
+	// para dejar todo como estaba al principio
+#ifndef DOMJUDGE
+	std::cin.rdbuf(cinbuf);
+	std::cout << "Pulsa Intro para salir..." << std::flush;
+	std::cin.get();
+#endif
+	return 0;
+}
