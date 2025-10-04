@@ -32,7 +32,7 @@ protected:
 	int s; // vertice origen
 
 	// arboles libres
-	// int visitados = 0;
+	size_t visitados = 0;
 	bool _esLibre = true;
 
 	void dfs(Grafo const& g, int v)
@@ -48,7 +48,7 @@ protected:
 			else if (ant[v] != w)
 				_esLibre = false;
 		}
-		//visitados++;
+		visitados++;
 	}
 
 public:
@@ -79,8 +79,7 @@ public:
 	}
 
 	// arboles libres
-	bool esLibre() const { return _esLibre; }
-	//bool esLibre() const { return _esLibre && visitados == visit.size(); }
+	bool esLibre() const { return _esLibre && visitados == visit.size(); }
 };
 
 bool resuelveCaso() {
