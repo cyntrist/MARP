@@ -26,6 +26,7 @@ using namespace std;
 
 class CaminosDFS
 {
+protected:
 	vector<bool> visit; // visit[v] = ¿hay camino de s a v?
 	vector<int> ant; // ant[v] = último vértice antes de llegar a v
 	int s; // vertice origen
@@ -71,12 +72,57 @@ public:
 	}
 };
 
-bool resuelveCaso() {
+class ArbolLibre : public CaminosDFS
+{
+	int visitados = 0;
+	bool _esLibre = true;
 
-	if (!std::cin)
+	void dfs(Grafo const& g, int v)
+	{
+		visit[v] = true;
+		for (int w : g.ady(v))
+		{
+			if (!visit[w])
+			{
+				ant[w] = v;
+				dfs(g, w);
+			}
+			else if (ant[v] != w)
+				_esLibre = false;
+		}
+		visitados++;
+	}
+
+public:
+	ArbolLibre(Grafo const& g, int s) : CaminosDFS(g, s) { }
+
+	//bool esLibre() const { return _esLibre; }
+	bool esLibre() const { return _esLibre && visitados == visit.size();  }
+};
+
+bool resuelveCaso() {
+	//Grafo grafo(cin);
+	//if (!cin)
+	//	return false;
+	//ArbolLibre arbol(grafo, 0);
+	//cout << (arbol.esLibre() ? "SI" : "NO") << '\n';
+
+	int V, A;
+	cin >> V >> A;
+
+	if (!cin)
 		return false;
 
-	Grafo grafo(cin);
+	Grafo g(V);
+	while (A--)
+	{
+		int v, w;
+		cin >> v >> w;
+		g.ponArista(v, w);
+	}
+
+	ArbolLibre a(g, 0);
+	cout << (a.esLibre() ? "SI" : "NO") << '\n';
 
 	return true;
 }

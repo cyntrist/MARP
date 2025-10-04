@@ -36,6 +36,7 @@ public:
     */
    Grafo(std::istream & flujo) : _A(0) {
       flujo >> _V;
+      //if (!flujo) return;
       _ady.resize(_V);
       int E, v, w;
       flujo >> E;
