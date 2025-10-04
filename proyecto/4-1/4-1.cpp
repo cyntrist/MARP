@@ -31,6 +31,10 @@ protected:
 	vector<int> ant; // ant[v] = último vértice antes de llegar a v
 	int s; // vertice origen
 
+	// arboles libres
+	// int visitados = 0;
+	bool _esLibre = true;
+
 	void dfs(Grafo const& g, int v)
 	{
 		visit[v] = true;
@@ -41,7 +45,10 @@ protected:
 				ant[w] = v;
 				dfs(g, w);
 			}
+			else if (ant[v] != w)
+				_esLibre = false;
 		}
+		//visitados++;
 	}
 
 public:
@@ -70,34 +77,10 @@ public:
 		cam.push_front(s);
 		return cam;
 	}
-};
 
-class ArbolLibre : public CaminosDFS
-{
-	int visitados = 0;
-	bool _esLibre = true;
-
-	void dfs(Grafo const& g, int v)
-	{
-		visit[v] = true;
-		for (int w : g.ady(v))
-		{
-			if (!visit[w])
-			{
-				ant[w] = v;
-				dfs(g, w);
-			}
-			else if (ant[v] != w)
-				_esLibre = false;
-		}
-		visitados++;
-	}
-
-public:
-	ArbolLibre(Grafo const& g, int s) : CaminosDFS(g, s) { }
-
-	//bool esLibre() const { return _esLibre; }
-	bool esLibre() const { return _esLibre && visitados == visit.size();  }
+	// arboles libres
+	bool esLibre() const { return _esLibre; }
+	//bool esLibre() const { return _esLibre && visitados == visit.size(); }
 };
 
 bool resuelveCaso() {
@@ -121,7 +104,7 @@ bool resuelveCaso() {
 		g.ponArista(v, w);
 	}
 
-	ArbolLibre a(g, 0);
+	CaminosDFS a(g, 0);
 	cout << (a.esLibre() ? "SI" : "NO") << '\n';
 
 	return true;
