@@ -79,7 +79,7 @@ public:
 	}
 
 	// arboles libres
-	bool esLibre() const { return _esLibre && visitados == visit.size(); }
+	bool esBipartito() const { return _esLibre && visitados == visit.size(); }
 };
 
 bool resuelveCaso() {
@@ -87,7 +87,7 @@ bool resuelveCaso() {
 	//if (!cin)
 	//	return false;
 	//ArbolLibre arbol(grafo, 0);
-	//cout << (arbol.esLibre() ? "SI" : "NO") << '\n';
+	//cout << (arbol.esBipartito() ? "SI" : "NO") << '\n';
 
 	int V, A;
 	cin >> V >> A;
@@ -104,7 +104,7 @@ bool resuelveCaso() {
 	}
 
 	CaminosDFS a(g, 0);
-	cout << (a.esLibre() ? "SI" : "NO") << '\n';
+	cout << (a.esBipartito() ? "SI" : "NO") << '\n';
 
 	return true;
 }
