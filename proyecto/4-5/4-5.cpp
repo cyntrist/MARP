@@ -103,15 +103,7 @@ bool resuelveCaso() {
 		return false;
 
 	Grafo g(V);
-	while (A--)
-	{
-		int v, w;
-		cin >> v >> w;
-		g.ponArista(v, w);
-	}
 
-	CaminosDFS a(g, 0);
-	cout << (a.esBipartito() ? "SI" : "NO") << '\n';
 
 	return true;
 }
