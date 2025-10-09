@@ -9,6 +9,8 @@
 #include <deque>
 #include <iostream>
 #include <fstream>
+#include <queue>
+
 #include "Grafo.h"
 using namespace std;
 
@@ -24,51 +26,43 @@ using namespace std;
  // ================================================================
  //@ <answer>
 
-// ESTO CAYÓ EN UN EXAMEN!!!!!!!!!!!!!!!!!!
 class CaminosDFS
 {
 protected:
 	vector<bool> visit; // visit[v] = ¿hay camino de s a v?
 	vector<int> ant; // ant[v] = último vértice antes de llegar a v
+	vector<int> dist; 
 	int s; // vertice origen
 
-	// bipartito
-	//bool bipartito = true;
-	//vector<bool> color;
-
-	void dfs(Grafo const& g, int v)
+	void dfs(Grafo const& g)
 	{
-		visit[v] = true;
-		for (int w : g.ady(v))
+		queue<int> q;
+        dist[s] = 0;
+		visit[s] = true;
+        q.push(s);
+        while (!q.empty()) 
 		{
-			//if (!bipartito) return;
-
-			if (!visit[w]) // si no se ha visitado el nodo
+            const int v = q.front(); q.pop();
+            for (int w : g.ady(v)) 
 			{
-				///ant[w] = v;
-				///color[w] = !color[v];
-				dfs(g, w); // adyacentes del nuevo nodo
-			}
-			//else if (color[w] == color[v])
-			//{
-			//	bipartito = false;
-			//}
-		}
+                if (!visit[w]) {
+                    ant[w] = v;
+                    dist[w] = dist[v] + 1;
+                    visit[w] = true;
+                    q.push(w);
+                }
+            }
+        }
 	}
 
 public:
-	CaminosDFS(Grafo const& g, int s) : visit(g.V(), false), ant(g.V()), s(s)
+	CaminosDFS(Grafo const& g, int s) : visit(g.V(), false), ant(g.V()), s(s),
+	dist(g.V(), g.V())
 	{
-		for (int v = 0; v < g.V(); ++v)
-		{
-			if (!visit[v])
-			{
-				dfs(g,v);
-			}
-		}
-
+        dfs(g);
 	}
 
+	/// Caminos
 	// ¿hay camino del origen a v?
 	bool hayCamino(int v) const
 	{
@@ -90,13 +84,17 @@ public:
 		return cam;
 	}
 
-	// arboles libres
-	//bool esBipartito() const { return bipartito; }
+	/// Problema
+	int distancia(int v) const
+	{
+        return dist[v];
+    }
 };
 
 bool resuelveCaso() {
 	int N, C, A, L, T; 
 	cin >> N >> C >> A >> L >> T;
+    int minCoste = C;
 
 	if (!cin)
 		return false;
@@ -109,8 +107,16 @@ bool resuelveCaso() {
 		g.ponArista(v - 1, w - 1);
 	}
 
-	CaminosDFS a(g, 0);
-	//cout << (a.esBipartito() ? "SI" : "NO") << '\n';
+	const CaminosDFS a(g, A - 1);
+    const CaminosDFS l(g, L - 1);
+    const CaminosDFS t(g, T - 1);
+
+    for (int i = 0; i < g.V(); i++) 
+	{
+        if (a.hayCamino(i) && l.hayCamino(i) && t.hayCamino(i)) 
+        	minCoste = min(minCoste, a.distancia(i) + l.distancia(i) + t.distancia(i));
+    }
+	cout << minCoste << endl;
 
 	return true;
 }
