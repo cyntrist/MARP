@@ -56,13 +56,13 @@ bool resuelveCaso() {
 	vector<int> horasTotales;
 	while (!colaB.empty() && !colaA.empty())
 	{
-		IndexPQ<int,int, std::greater<int>>::Par a = colaA.top();
-		IndexPQ<int,int, std::greater<int>>::Par b = colaB.top();
-
 		int horas = 0, i = 0;
 
 		while (i < N && !colaB.empty() && !colaA.empty())
 		{
+			IndexPQ<int,int, std::greater<int>>::Par a = colaA.top();
+			IndexPQ<int,int, std::greater<int>>::Par b = colaB.top();
+
 			if (a.prioridad > b.prioridad)
 			{
 				int bateria = a.prioridad - b.prioridad;
