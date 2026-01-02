@@ -25,50 +25,69 @@ using namespace std;
  // ================================================================
  //@ <answer>
 
-struct Pais
-{
-	int puntos;
-	string nombre;
-};
-
-bool operator<(Pais const& a, Pais const& b)
-{
-	return b.puntos < a.puntos || (b.puntos == a.puntos && b.nombre > a.nombre);
-}
+struct Dron { int a, b; };
 
 bool resuelveCaso() {
-	int N;
-	cin >> N;
+	int N, A, B;
+	cin >> N >> A >> B;
 
-	if (!cin)
+	if (!cin || N <= 0)
 		return false;
 
-	IndexPQ<string, Pais> cola;
-	for (int i = 0; i < N; i++)
+	int priority = 0;
+	//priority_queue<int> colaA;
+	IndexPQ<int, int> colaA;
+	for (int i = 0; i < A; i++)
 	{
-		string evento;
-		cin >> evento;
-		if (evento == "?")
+		cin >> priority;
+		//colaA.push(priority);
+		colaA.push(i, priority);
+	}
+
+	//priority_queue<int> colaB;
+	IndexPQ<int, int> colaB;
+	for (int i = 0; i < B; i++)
+	{
+		cin >> priority;
+		//colaB.push(priority);
+		colaB.push(i, priority);
+	}
+
+	vector<int> horasTotales;
+	while (!colaB.empty() && !colaA.empty())
+	{
+		IndexPQ<int,int>::Par a = colaA.top();
+		IndexPQ<int,int>::Par b = colaB.top();
+
+		int horas = 0;
+
+		if (a.prioridad > b.prioridad)
 		{
-			if (!cola.empty())
-				cout << cola.top().elem << " " << cola.top().prioridad.puntos << endl;
+			int bateria = a.prioridad - b.prioridad;
+			horas += b.prioridad;
+			colaA.update(a.elem, bateria);
+			colaB.pop();
 		}
+		else if (b.prioridad > a.prioridad)
+		{
+			int bateria = b.prioridad - a.prioridad;
+			horas += a.prioridad;
+			colaB.update(b.elem, bateria);
+		} 
 		else
 		{
-			int puntos;
-			cin >> puntos;
-			try
-			{
-				puntos += cola.priority(evento).puntos;
-			}
-			catch (...)
-			{
-				// si no existe lo añadira normal a continuacion no hace falta gestion de error
-			}
-			cola.update(evento, { puntos, evento });
+			horas = a.prioridad;
+			colaA.pop();
+			colaB.pop();
 		}
+
+		horasTotales.push_back(horas);
 	}
-	cout << "---\n";
+
+	for (int tiempo : horasTotales)
+		cout << tiempo << " ";
+
+	cout << "\n";
 	return true;
 }
 
