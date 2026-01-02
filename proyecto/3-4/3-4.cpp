@@ -56,35 +56,31 @@ bool resuelveCaso() {
 	vector<int> horasTotales;
 	while (!colaB.empty() && !colaA.empty())
 	{
-		int horas = 0, i = 0;
+		int horas = 0;
+		int i = 0;
+
+		vector<IndexPQ<int, int, std::greater<int>>::Par> restosA;
+		vector<IndexPQ<int, int, std::greater<int>>::Par> restosB;
 
 		while (i < N && !colaB.empty() && !colaA.empty())
 		{
-			IndexPQ<int,int, std::greater<int>>::Par a = colaA.top();
-			IndexPQ<int,int, std::greater<int>>::Par b = colaB.top();
+			IndexPQ<int, int, std::greater<int>>::Par a = colaA.top(); colaA.pop();
+			IndexPQ<int, int, std::greater<int>>::Par b = colaB.top(); colaB.pop();
+
+			int vuelo = min(a.prioridad, b.prioridad);
+			horas += vuelo;
 
 			if (a.prioridad > b.prioridad)
-			{
-				int bateria = a.prioridad - b.prioridad;
-				horas += b.prioridad;
-				colaA.update(a.elem, bateria);
-				colaB.pop();
-			}
-			else if (b.prioridad > a.prioridad)
-			{
-				int bateria = b.prioridad - a.prioridad;
-				horas += a.prioridad;
-				colaA.pop();
-				colaB.update(b.elem, bateria);
-			} 
-			else
-			{
-				horas = a.prioridad;
-				colaA.pop();
-				colaB.pop();
-			}
+				restosA.push_back({ a.elem, a.prioridad - b.prioridad });
+			if (b.prioridad > a.prioridad)
+				restosB.push_back({ b.elem, b.prioridad - a.prioridad });
 			i++;
 		}
+
+		for (auto pila : restosA)
+			colaA.push(pila.elem, pila.prioridad);
+		for (auto pila : restosB)
+			colaB.push(pila.elem, pila.prioridad);
 
 		horasTotales.push_back(horas);
 	}
