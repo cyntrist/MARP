@@ -36,7 +36,7 @@ bool resuelveCaso() {
 
 	int priority = 0;
 	//priority_queue<int> colaA;
-	IndexPQ<int, int> colaA;
+	IndexPQ<int, int, std::greater<int>> colaA;
 	for (int i = 0; i < A; i++)
 	{
 		cin >> priority;
@@ -45,7 +45,7 @@ bool resuelveCaso() {
 	}
 
 	//priority_queue<int> colaB;
-	IndexPQ<int, int> colaB;
+	IndexPQ<int, int, std::greater<int>> colaB;
 	for (int i = 0; i < B; i++)
 	{
 		cin >> priority;
@@ -56,8 +56,8 @@ bool resuelveCaso() {
 	vector<int> horasTotales;
 	while (!colaB.empty() && !colaA.empty())
 	{
-		IndexPQ<int,int>::Par a = colaA.top();
-		IndexPQ<int,int>::Par b = colaB.top();
+		IndexPQ<int,int, std::greater<int>>::Par a = colaA.top();
+		IndexPQ<int,int, std::greater<int>>::Par b = colaB.top();
 
 		int horas = 0;
 
