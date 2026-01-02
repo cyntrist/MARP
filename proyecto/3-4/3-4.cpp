@@ -59,26 +59,31 @@ bool resuelveCaso() {
 		IndexPQ<int,int, std::greater<int>>::Par a = colaA.top();
 		IndexPQ<int,int, std::greater<int>>::Par b = colaB.top();
 
-		int horas = 0;
+		int horas = 0, i = 0;
 
-		if (a.prioridad > b.prioridad)
+		while (i < N && !colaB.empty() && !colaA.empty())
 		{
-			int bateria = a.prioridad - b.prioridad;
-			horas += b.prioridad;
-			colaA.update(a.elem, bateria);
-			colaB.pop();
-		}
-		else if (b.prioridad > a.prioridad)
-		{
-			int bateria = b.prioridad - a.prioridad;
-			horas += a.prioridad;
-			colaB.update(b.elem, bateria);
-		} 
-		else
-		{
-			horas = a.prioridad;
-			colaA.pop();
-			colaB.pop();
+			if (a.prioridad > b.prioridad)
+			{
+				int bateria = a.prioridad - b.prioridad;
+				horas += b.prioridad;
+				colaA.update(a.elem, bateria);
+				colaB.pop();
+			}
+			else if (b.prioridad > a.prioridad)
+			{
+				int bateria = b.prioridad - a.prioridad;
+				horas += a.prioridad;
+				colaA.pop();
+				colaB.update(b.elem, bateria);
+			} 
+			else
+			{
+				horas = a.prioridad;
+				colaA.pop();
+				colaB.pop();
+			}
+			i++;
 		}
 
 		horasTotales.push_back(horas);
