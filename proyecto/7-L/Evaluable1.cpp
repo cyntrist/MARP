@@ -88,11 +88,11 @@ bool resuelveCaso() {
 	Comarca<int> comarca(cordilleraCantabrica, O - 1); // O((N+C) * log(N))
 	Comarca<int> comarcaInvertida(cordilleraCantabrica.inverso(), O - 1);  // O((N+C) * log(N))
 	// Consultas.
-	while (i < P && !imposible) // O(P)
+	while (i < P) // O(P)
 	{
 		int p;
 		cin >> p;
-		if (!comarca.hayCamino(p - 1) || !comarcaInvertida.hayCamino(O - 1)) imposible = true;
+		if (!comarca.hayCamino(p - 1) || !comarcaInvertida.hayCamino(p - 1)) imposible = true;
 		else {
 			esfuerzoTotal += comarca.distancia(p - 1);
 			esfuerzoTotal += comarcaInvertida.distancia(p - 1);
