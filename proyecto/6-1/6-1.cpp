@@ -31,30 +31,41 @@ using Mapa = vector<string>;
 class Manchas
 {
 public:
-	Manchas(Mapa const& M) : F(M.size()), C(M[0].size()), visit(F, vector<bool>(C, false)), num(0), maxim(0)
+	Manchas(Mapa const& M) 
+	: F(M.size()), 
+	  C(M[0].size()), 
+	  manchas(F * C),
+	  maxim(0)
 	{
 		for (int i = 0; i < F; ++i)
 		{
 			for (int j = 0; j < C; ++j)
-			{
-				if (!visit[i][j] && M[i][j] == '#')
-				{
-					++num;
-					int nuevoTam = dfs(M, i, j);
-					maxim = max(nuevoTam, maxim);
-				}
-			}
+				if (M[i][j] == '#')
+					insertar(M, i, j);
 		}
 	}
 
-	int numero() const { return num; }
 	int maximo() const { return maxim; }
+	void insertar(Mapa const& m, int i, int j)
+	{
+		int v = id(i, j);
+		maxim = max(1, maxim);
 
+		for (auto d : dirs)
+		{
+			int ni = i + d.first, nj = j + d.second;
+			if (correcta(ni, nj) && m[ni][nj] == '#')
+			{
+				int w = id(ni, nj);
+				manchas.unir(v, w);
+				maxim = max(maxim, manchas.cardinal(v));
+			}
+		}
+	}
 private:
 	int F, C;
+	ConjuntosDisjuntos manchas;
 	int maxim;
-	int num;
-	vector<vector<bool>> visit;
 
 	bool correcta(int i, int j) const
 	{
@@ -66,18 +77,7 @@ private:
 		{-1, -1}, {-1, 1}, {1, -1}, {1, 1}
 	};
 
-	int dfs(const Mapa& m, int i, int j)
-	{
-		visit[i][j] = true;
-		int tam = 1;
-		for (auto d : dirs)
-		{
-			int ni = i + d.first, nj = j + d.second;
-			if (correcta(ni, nj) && m[ni][nj] == '#' && !visit[ni][nj])
-				tam += dfs(m, ni, nj);
-		}
-		return tam;
-	}
+	int id(int f, int c) const { return f * C + c; }
 };
 
 bool resuelveCaso()
@@ -104,8 +104,8 @@ bool resuelveCaso()
 		int f, c;
 		cin >> f >> c;
 		m[f - 1][c - 1] = '#';
-		Manchas man2(m);
-		cout << man2.maximo() << ' ';
+		man.insertar(m, f - 1, c - 1);
+		cout << man.maximo() << ' ';
 	}
 	cout << '\n';
 	return true;
