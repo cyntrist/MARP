@@ -169,14 +169,14 @@ bool resuelveCaso() {
 		{
 			int salto;
 			cin >> salto;
-			g.ponArista(i, salto);
+			g.ponArista(i, salto - 1);
 		}
 		else if (instruccion == 'C')
 		{
 			int salto;
 			cin >> salto;
 			g.ponArista(i, i + 1);
-			g.ponArista(i, salto);
+			g.ponArista(i, salto - 1);
 		}
 		i++;
 	}
@@ -214,5 +214,3 @@ int main() {
 #endif
 	return 0;
 }
-
-
