@@ -11,6 +11,7 @@
 #include <fstream>
 #include <queue>
 #include "GrafoValorado.h"
+#include "PriorityQueue.h"
 #include "ConjuntosDisjuntos.h"
 using namespace std;
 
@@ -24,76 +25,57 @@ using namespace std;
 //@ <answer>
 
 template <typename Valor>
-class ARMKruskal {
-    vector<bool> visit;
-    int comp;
-    Valor coste;
-    vector<Arista<Valor>> arm;
-
-    void dfs(GrafoValorado<int> const& g, int v, int umbral)
-	{
-        visit[v] = true;
-        for (auto a : g.ady(v)) 
-        {
-            if (a.valor() < umbral) 
-            {
-                int w = a.otro(v);
-                if (!visit[w])
-                    dfs(g, w, umbral);
-            }
-        }
-    }
+class ARM_Kruskal {
 public:
-    Valor costeARM() const { return coste; }
-    vector<Arista<Valor>> const& ARM() const { return arm; }
-    int compo() const { return comp; }
-
-    ARMKruskal(GrafoValorado<Valor> const& g, int A)
-	: visit(g.V(), false), comp(0), coste(0)
+	ARM_Kruskal(GrafoValorado<Valor> const& g) : _coste(0), _ctos(g.V())
 	{
+		PriorityQueue<Arista<Valor>> pq(g.aristas());
 
-    }
+		while (!pq.empty())
+		{
+			Arista<Valor> a = pq.top(); pq.pop();
+			int v = a.uno(), w = a.otro(v);
+			if (!_ctos.unidos(v, w))
+			{
+				_ctos.unir(v, w);
+				_ARM.push_back(a);
+				_coste += a.valor();
+				if (_ARM.size() == g.V() - 1) break;
+			}
+		}
+	}
 
-    int componentes(GrafoValorado<Valor> const& g, int A) {
-        int i = 0, c = 0;
-
-        while (i < g.V()) 
-        {
-            if (!visit[i]) 
-            {
-                dfs(g, i, A);
-                c++;
-            }
-            i++;
-        }
-        
-        return c;
-    }
+	Valor coste() const { return _coste;  }
+	int num_cmptes() const { return _ctos.num_cjtos(); }
+private:
+	vector<Arista<Valor>> _ARM;
+	Valor _coste;
+	ConjuntosDisjuntos _ctos;
 };
 
 
 bool resuelveCaso()
 {
-  int N, M, A;
-  cin >> N >> M >> A;
-  if (!cin)
-    return false;
+	int N, M, A;
+	cin >> N >> M >> A;
+	if (!cin)
+	return false;
 
-  int X, Y, C;
-  GrafoValorado<int> g(N);
+	int X, Y, C;
+	GrafoValorado<int> g(N);
 
-  for (int i = 0; i < M; i++) 
-  {
-      cin >> X >> Y >> C;
-      if (C < A) 
-          g.ponArista(Arista <int>(X - 1, Y - 1, C));
-  }
+	for (int i = 0; i < M; i++) 
+	{
+		cin >> X >> Y >> C;
+		if (C < A) 
+			g.ponArista(Arista <int>(X - 1, Y - 1, C));
+	}
 
-  ARMKruskal<int> k(g, A);
-  int coste = A * k.compo() + k.costeARM();
-  cout << coste << " " << k.compo() << '\n';
-  
-  return true;
+	ARM_Kruskal<int> k(g);
+	int coste = A * k.num_cmptes() + k.coste();
+	cout << coste << " " << k.num_cmptes() << '\n';
+
+	return true;
 }
 
 //@ </answer>
