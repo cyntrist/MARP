@@ -87,12 +87,13 @@ bool resuelveCaso()
         int v, w, d;
         cin >> v >> w >> d;
         dg.ponArista(AristaDirigida<int>(v - 1, w - 1, d));
+        dg.ponArista(AristaDirigida<int>(w - 1, v - 1, d));
     }
 
     int P;
     cin >> P;
 
-    for (int i = 0; i < P; i++)
+    while (P--)
     {
         int v, w;
         cin >> v >> w;
