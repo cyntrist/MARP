@@ -1,19 +1,129 @@
-// 7-L.cpp : Este archivo contiene la función "main". La ejecución del programa comienza y termina ahí.
-//
+/*@ <authors>
+ *
+ * MARP62 Cynthia Tristan Alvarez
+ * MARP19 Andres Garcia Navarro
+ * Pto-0504
+ *
+ *@ </authors> */
 
 #include <iostream>
+#include <fstream>
+#include <algorithm>
+#include "DigrafoValorado.h"
+#include "IndexPQ.h"
+#include <string>
+#include <limits>
+using namespace std;
 
-int main()
-{
-    std::cout << "Hello World!\n";
+/*@ <answer>
+
+	El coste en tiempo total es: O((N + C) * log(C)) donde N son las casas, C son los caminos.
+	Hacemos Dijkstra una vez desde el origen (caminos minimos de la oficina a cada casa), y otra con el grafo invertido para saber los caminos minimos de cada casa a la oficina.
+	El coste en espacio adicional es: O(2N) donde N es el numero de casas.
+	Cada vez que Creamos una comarca creamos un espacio adicional de N.
+
+ @ </answer> */
+
+
+ // ================================================================
+ // Escribe el código completo de tu solución aquí debajo (después de la marca)
+ // 
+ // O(V + A logV)
+ //@ <answer>
+template <typename Valor>
+class Comarca {
+private:
+	const Valor INF = std::numeric_limits<Valor>::max();
+	int origen;
+	std::vector<Valor> dist;
+	IndexPQ<Valor> pq;
+public:
+	Comarca(DigrafoValorado<Valor> const& g, int orig) : origen(orig),
+		dist(g.V(), INF), pq(g.V()) {
+		dist[origen] = 0;
+		pq.push(origen, 0);
+		// O((N + C) * log(N))
+		while (!pq.empty()) {
+			int v = pq.top().elem; pq.pop();
+			for (auto a : g.ady(v)) //O(C * log(N)))
+				relajar(a);
+		}
+	}
+	// O(1)
+	bool hayCamino(int v) const { return dist[v] != INF; }
+
+	// O(1)
+	Valor distancia(int v) const { return dist[v]; }
+private:
+	void relajar(AristaDirigida<Valor> a) {
+		int v = a.desde(), w = a.hasta();
+		if (dist[w] > dist[v] + a.valor()) {
+			dist[w] = dist[v] + a.valor();
+			pq.update(w, dist[w]);
+		}
+	}
+};
+
+bool resuelveCaso() {
+
+	// Leemos la entrada.
+	int N, C;
+	cin >> N >> C;
+	if (!cin)
+		return false;
+
+	// Leer el resto del caso y resolverlo.
+	DigrafoValorado<int> cordilleraCantabrica(N);
+	for (int i = 0; i < C; i++) // O(C)
+	{
+		int v, w, valor;
+		cin >> v >> w >> valor;
+		AristaDirigida<int> ar(v - 1, w - 1, valor);
+		cordilleraCantabrica.ponArista(ar);
+	}
+	int O, P;
+	cin >> O >> P;
+	long esfuerzoTotal = 0, i = 0;
+	bool imposible = false;
+	Comarca<int> comarca(cordilleraCantabrica, O - 1); // O((N+C) * log(N))
+	Comarca<int> comarcaInvertida(cordilleraCantabrica.inverso(), O - 1);  // O((N+C) * log(N))
+	// Consultas.
+	while (i < P) // O(P)
+	{
+		int p;
+		cin >> p;
+		if (!comarca.hayCamino(p - 1) || !comarcaInvertida.hayCamino(p - 1)) imposible = true;
+		else {
+			esfuerzoTotal += comarca.distancia(p - 1);
+			esfuerzoTotal += comarcaInvertida.distancia(p - 1);
+		}
+		i++;
+	}
+
+	cout << (imposible ? "Imposible" : to_string(esfuerzoTotal)) << "\n";
+
+
+	return true;
 }
 
-// Ejecutar programa: Ctrl + F5 o menú Depurar > Iniciar sin depurar
-// Depurar programa: F5 o menú Depurar > Iniciar depuración
+//@ </answer>
+//  Lo que se escriba debajo de esta línea ya no forma parte de la solución.
 
-// Sugerencias para primeros pasos: 1. Use la ventana del Explorador de soluciones para agregar y administrar archivos
-//   2. Use la ventana de Team Explorer para conectar con el control de código fuente
-//   3. Use la ventana de salida para ver la salida de compilación y otros mensajes
-//   4. Use la ventana Lista de errores para ver los errores
-//   5. Vaya a Proyecto > Agregar nuevo elemento para crear nuevos archivos de código, o a Proyecto > Agregar elemento existente para agregar archivos de código existentes al proyecto
-//   6. En el futuro, para volver a abrir este proyecto, vaya a Archivo > Abrir > Proyecto y seleccione el archivo .sln
+int main() {
+	// ajustes para que cin extraiga directamente de un fichero
+#ifndef DOMJUDGE
+	ifstream in("casos.txt");
+	if (!in.is_open())
+		cout << "Error: no se ha podido abrir el archivo de entrada." << endl;
+	auto cinbuf = cin.rdbuf(in.rdbuf());
+#endif
+
+	// Resolvemos
+	while (resuelveCaso());
+
+	// para dejar todo como estaba al principio
+#ifndef DOMJUDGE
+	cin.rdbuf(cinbuf);
+#endif
+	return 0;
+}
