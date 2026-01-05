@@ -10,10 +10,9 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-
+#include <limits>
 #include "DigrafoValorado.h"
 #include "IndexPQ.h"
-#include "PriorityQueue.h"
 using namespace std;
 
 /*@ <answer>
@@ -31,7 +30,7 @@ class Dijkstra
 public:
     Dijkstra(DigrafoValorado<Valor> const& g, int orig) : origen(orig),
         dist(g.V(), INF), ulti(g.V())
-	//, pq(g.V())
+	, pq(g.V())
     {
         dist[origen] = 0;
         pq.push(origen, 0);
