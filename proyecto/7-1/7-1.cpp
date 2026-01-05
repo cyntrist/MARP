@@ -62,6 +62,7 @@ private:
     vector<Valor> dist;
     vector<AristaDirigida<Valor>> ulti;
     IndexPQ<Valor> pq;
+
     void relajar(AristaDirigida<Valor> a)
 	{
         int v = a.desde(), w = a.hasta();

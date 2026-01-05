@@ -3,8 +3,8 @@
 //
 //  Implementación de colas con prioridad mediante montículos.
 //  Los elementos son enteros de 0 a N-1 que tienen asociada una prioridad
-//  dentro de la cola. La prioridad de cualquier elemento puede ser
-//  modificada con coste en O(log N).
+//  dentro de la cola. La prioridad de un elemento puede ser modificada
+//  con coste en O(log N).
 //
 //  Facultad de Informática
 //  Universidad Complutense de Madrid
@@ -13,41 +13,46 @@
 //
 
 #ifndef INDEXPQ_H_
-#define INDEXPQ_H_
 
 #include <iostream>
 #include <stdexcept>
 #include <vector>
-#include <unordered_map>
+
 
 // T es el tipo de las prioridades
 // Comparator dice cuándo un valor de tipo T es más prioritario que otro
-template <typename ID, typename T, typename Comparator = std::less<T>>
+template <typename T, typename Comparator = std::less<T>>
 class IndexPQ {
 public:
    // registro para las parejas < elem, prioridad >
    struct Par {
-      ID elem;
+      int elem;
       T prioridad;
    };
-   
+
 private:
    // vector que contiene los datos (pares < elem, prio >)
    std::vector<Par> array;     // primer elemento en la posición 1
-   
-   // diccionario que contiene las posiciones en array de los elementos
-   std::unordered_map<ID, int> posiciones;
-   
+
+   // vector que contiene las posiciones en array de los elementos
+   std::vector<int> posiciones;   // un 0 indica que el elemento no está
+
    /* Objeto función que sabe comparar prioridades.
     antes(a,b) es cierto si a es más prioritario que b */
    Comparator antes;
-   
+
 public:
-   IndexPQ(Comparator c = Comparator()) :
-       array(1), antes(c) {}
-   
-   void push(ID e, T const& p) {
-      if (posiciones.count(e))
+   IndexPQ(int N, Comparator c = Comparator()) : array(1), posiciones(N, 0), antes(c) {}
+
+   IndexPQ(IndexPQ<T,Comparator> const&) = default;
+
+   IndexPQ<T,Comparator>& operator=(IndexPQ<T,Comparator> const&) = default;
+
+   ~IndexPQ() = default;
+
+   // e debe ser uno de los posibles elementos
+   void push(int e, T const& p) {
+      if (posiciones.at(e) != 0)
          throw std::invalid_argument("No se pueden insertar elementos repetidos.");
       else {
          array.push_back({e, p});
@@ -55,12 +60,12 @@ public:
          flotar(size());
       }
    }
-   
-   void update(ID e, T const& p) {
-      if (!posiciones.count(e)) // el elemento e se inserta por primera vez
+
+   void update(int e, T const& p) {
+      int i = posiciones.at(e);
+      if (i == 0) // el elemento e se inserta por primera vez
          push(e, p);
       else {
-         int i = posiciones[e];
          array[i].prioridad = p;
          if (i != 1 && antes(array[i].prioridad, array[i/2].prioridad))
             flotar(i);
@@ -68,25 +73,25 @@ public:
             hundir(i);
       }
    }
-   
+
    int size() const {
       return int(array.size()) - 1;
    }
-   
+
    bool empty() const {
       return size() == 0;
    }
-   
+
    Par const& top() const {
       if (size() == 0)
          throw std::domain_error("No se puede consultar el primero de una cola vacia");
       else return array[1];
    }
-   
+
    void pop() {
       if (size() == 0) throw std::domain_error("No se puede eliminar el primero de una cola vacía.");
       else {
-         posiciones.erase(array[1].elem); // eliminamos el elemento
+         posiciones[array[1].elem] = 0; // para indicar que no está
          if (size() > 1) {
             array[1] = std::move(array.back());
             posiciones[array[1].elem] = 1;
@@ -97,14 +102,15 @@ public:
       }
    }
 
-   T const& priority(ID e) const {
-      if (!posiciones.count(e))
+   T const& priority(int e) const {
+      int i = posiciones.at(e);
+      if (i == 0)
          throw std::domain_error("No se puede consultar la prioridad de un elemento que no ha sido insertado aún.");
-      return array[posiciones.at(e)].prioridad;
+      return array[i].prioridad;
    }
 
 private:
-   
+
    void flotar(int i) {
       Par parmov = std::move(array[i]);
       int hueco = i;
@@ -114,7 +120,7 @@ private:
       }
       array[hueco] = std::move(parmov); posiciones[array[hueco].elem] = hueco;
    }
-   
+
    void hundir(int i) {
       Par parmov = std::move(array[i]);
       int hueco = i;
@@ -132,7 +138,7 @@ private:
       }
       array[hueco] = std::move(parmov); posiciones[array[hueco].elem] = hueco;
    }
-   
+
 };
 
 #endif /* INDEXPQ_H_ */

@@ -6,9 +6,12 @@
  *
  *@ </authors> */
 
+#include <deque>
 #include <iostream>
 #include <fstream>
 #include "DigrafoValorado.h"
+#include "IndexPQ.h"
+#include <limits>
 using namespace std;
 
 /*@ <answer>
@@ -20,53 +23,57 @@ using namespace std;
  // Escribe el código completo de tu solución aquí debajo (después de la marca)
  //@ <answer>
 
-class CaminosMin
+template <typename Valor>
+class N_Dikjstras
 {
 public:
-    CaminosMin(DigrafoValorado<int> const& g, int orig) :
-        origen(orig), dist(g.V(), INF), ulti(g.V()), pq(g.V()), caminos(g.V(), 0) {
+    N_Dikjstras(DigrafoValorado<Valor> const& g, int o) 
+	    : dist(g.V(), INF), ulti(g.V()), origen(o), pq(g.V()), n_caminos(g.V(), 0)
+    {
         dist[origen] = 0;
-        caminos[origen] = 1;
         pq.push(origen, 0);
-        while (!pq.empty()) {
+        n_caminos[origen] = 1;
+        while (!pq.empty())
+        {
             int v = pq.top().elem; pq.pop();
-            for (auto a : g.ady(v))
-                relajar(a);
+	        for (auto a : g.ady(v))
+	            relajar(a);
         }
     }
 
-    int64_t calculaNCaminos(DigrafoValorado<int> const& g, int v) {
-        if (!hayCamino(v)) return 0;
-
-        if (caminos[v] == 0) {
-            int64_t min = distancia(v);
-            for (auto a : g.ady(v)) {
-                int w = a.hasta();
-                if (dist[w] + a.valor() <= min) {
-                    caminos[v] += calculaNCaminos(g, w);
-                }
-            }
-        }
-        return caminos[v];
+    Valor distancia(int v) const { return dist[v];  }
+    bool hayCamino(int v) const { return dist[v] != INF;  }
+    int cuantosCaminos(int v) const { return n_caminos[v]; }
+    deque<AristaDirigida<Valor>> camino(int v)
+    {
+        deque<AristaDirigida<Valor>> camino;
+        AristaDirigida<Valor> a;
+        for (a = ulti[v]; a.desde() != origen ; a = ulti[a.desde()])
+            camino.push_front(a);
+        camino.push_front(a);
+        return camino;
     }
-
-    bool hayCamino(int v) const { return dist[v] != INF; }
-    int64_t distancia(int v) const { return dist[v]; }
-    int64_t nCaminos(int v) const { return caminos[v]; }
-
 private:
-    const int INF = 1000000000;
+    const Valor INF = numeric_limits<Valor>::max();
+    vector<int> dist;
+    vector<AristaDirigida<Valor>> ulti;
     int origen;
-    std::vector<int64_t> dist;
-    std::vector<int64_t> caminos; //Caminos minimos a cada indice
-    std::vector<AristaDirigida<int>> ulti;
-    IndexPQ<int64_t> pq;
+    IndexPQ<Valor> pq;
 
-    void relajar(AristaDirigida<int> a) {
+    vector<int> n_caminos; // n caminos minimos por nodo desde origen
+
+    void relajar(AristaDirigida<Valor> a)
+    {
         int v = a.desde(), w = a.hasta();
-        if (dist[w] > dist[v] + a.valor()) {
-            dist[w] = dist[v] + a.valor(); ulti[w] = a;
+        if (dist[w] > dist[v] + a.valor())
+        {
+            dist[w] = dist[v] + a.valor();
             pq.update(w, dist[w]);
+            n_caminos[w] = n_caminos[v];
+        }
+        else if (dist[w] == dist[v] + a.valor()) 
+        {
+            n_caminos[w] += n_caminos[v];
         }
     }
 };
@@ -74,11 +81,23 @@ private:
 
 bool resuelveCaso()
 {
-    int N, M, A;
-    cin >> N >> M >> A;
+    int N, C;
+    cin >> N >> C;
     if (!cin)
         return false;
 
+    DigrafoValorado<int> g(N);
+    while (C--)
+    {
+        int v, w, p;
+        cin >> v >> w >> p;
+        --v; --w;
+        g.ponArista({ v, w, p });
+        g.ponArista({ w, v, p });
+    }
+
+    N_Dikjstras<int> d(g, 0);
+    cout << d.cuantosCaminos(N - 1) << '\n';
     return true;
 }
 
