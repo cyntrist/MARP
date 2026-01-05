@@ -13,7 +13,6 @@
 //
 
 #ifndef INDEXPQ_H_
-#define INDEXPQ_H_
 
 #include <iostream>
 #include <stdexcept>
