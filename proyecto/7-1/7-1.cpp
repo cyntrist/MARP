@@ -119,7 +119,7 @@ bool resuelveCaso()
         }
         
     }
-    cout << "--\n";
+    cout << "---\n";
     return true;
 }
 
