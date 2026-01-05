@@ -106,14 +106,16 @@ bool resuelveCaso()
         {
             cout << d.distancia(w) << ": ";
             deque<AristaDirigida<int>> camino = d.camino(w);
-            while (!camino.empty())
+            if (!camino.empty())
             {
-                AristaDirigida<int> arista = camino.front(); camino.pop_front();
-                cout << arista.desde() + 1 << " -> ";
-                if (camino.empty())
-                    cout << arista.hasta() + 1;
+                cout << camino.front().desde() + 1;
+                while (!camino.empty())
+                {
+                    AristaDirigida<int> a = camino.front(); camino.pop_front();
+                    cout << " -> " << a.hasta() + 1;
+                }
             }
-            cout << "\n";
+            cout << '\n';
         }
         
     }
