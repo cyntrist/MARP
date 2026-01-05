@@ -1,19 +1,73 @@
-// 8-L.cpp : Este archivo contiene la función "main". La ejecución del programa comienza y termina ahí.
-//
+
+/*@ <authors>
+ *
+ * Nombre, apellidos y usuario del juez (TAISXXX) de los autores de la solución.
+ *
+ *@ </authors> */
 
 #include <iostream>
+#include <fstream>
+#include <queue>
+#include <vector>
 
-int main()
+using namespace std;
+
+
+/*@ <answer>
+
+ Escribe aquí un comentario general sobre la solución, explicando cómo
+ se resuelve el problema y cuál es el coste de la solución, en función
+ del tamaño del problema.
+
+ @ </answer> */
+
+
+ // ================================================================
+ // Escribe el código completo de tu solución aquí debajo
+ // ================================================================
+ //@ <answer>
+struct Conferencia
 {
-    std::cout << "Hello World!\n";
+	int inicio, fin;
+};
+
+bool resuelveCaso() {
+	int N;
+	cin >> N;
+
+	if (N == 0)  // fin de la entrada
+		return false;
+
+	vector<Conferencia> c;
+	for (int i = 0; i < N; i++)
+	{
+		int ini, fin;
+		cin >> ini >> fin;
+		c.push_back({ ini, fin });
+	}
+
+	return true;
 }
 
-// Ejecutar programa: Ctrl + F5 o menú Depurar > Iniciar sin depurar
-// Depurar programa: F5 o menú Depurar > Iniciar depuración
+//@ </answer>
+//  Lo que se escriba dejado de esta línea ya no forma parte de la solución.
 
-// Sugerencias para primeros pasos: 1. Use la ventana del Explorador de soluciones para agregar y administrar archivos
-//   2. Use la ventana de Team Explorer para conectar con el control de código fuente
-//   3. Use la ventana de salida para ver la salida de compilación y otros mensajes
-//   4. Use la ventana Lista de errores para ver los errores
-//   5. Vaya a Proyecto > Agregar nuevo elemento para crear nuevos archivos de código, o a Proyecto > Agregar elemento existente para agregar archivos de código existentes al proyecto
-//   6. En el futuro, para volver a abrir este proyecto, vaya a Archivo > Abrir > Proyecto y seleccione el archivo .sln
+int main() {
+	// ajustes para que cin extraiga directamente de un fichero
+#ifndef DOMJUDGE
+	std::ifstream in("casos.txt");
+	if (!in.is_open())
+		std::cout << "Error: no se ha podido abrir el archivo de entrada." << std::endl;
+	auto cinbuf = std::cin.rdbuf(in.rdbuf());
+#endif
+
+	while (resuelveCaso());
+
+	// para dejar todo como estaba al principio
+#ifndef DOMJUDGE
+	std::cin.rdbuf(cinbuf);
+	std::cout << "Pulsa Intro para salir..." << std::flush;
+	std::cin.get();
+#endif
+	return 0;
+}
