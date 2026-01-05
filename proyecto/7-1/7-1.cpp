@@ -9,8 +9,11 @@
 #include <deque>
 #include <iostream>
 #include <fstream>
+#include <string>
+
 #include "DigrafoValorado.h"
 #include "IndexPQ.h"
+#include "PriorityQueue.h"
 using namespace std;
 
 /*@ <answer>
@@ -23,13 +26,12 @@ using namespace std;
  //@ <answer>
 
 template <typename Valor>
-using Camino = deque<Valor>; // para representar caminos
-template <typename Valor>
 class Dijkstra
 {
 public:
     Dijkstra(DigrafoValorado<Valor> const& g, int orig) : origen(orig),
-        dist(g.V(), INF), ulti(g.V()), pq(g.V())
+        dist(g.V(), INF), ulti(g.V())
+	//, pq(g.V())
     {
         dist[origen] = 0;
         pq.push(origen, 0);
@@ -44,9 +46,9 @@ public:
     bool hayCamino(int v) const { return dist[v] != INF; }
 
     Valor distancia(int v) const { return dist[v]; }
-    Camino<Valor> camino(int v) const
+    deque<AristaDirigida<Valor>> camino(int v) const
 	{
-        Camino<Valor> cam;
+        deque<AristaDirigida<Valor>> cam;
         // recuperamos el camino retrocediendo
         AristaDirigida<Valor> a;
         for (a = ulti[v]; a.desde() != origen; a = ulti[a.desde()])
@@ -94,8 +96,28 @@ bool resuelveCaso()
     {
         int v, w;
         cin >> v >> w;
+        --v; --w;
+        Dijkstra<int> d(dg, v);
+        if (!d.hayCamino(w))
+        {
+            cout << "NO LLEGA\n";
+        }
+        else
+        {
+            cout << d.distancia(w) << ": ";
+            deque<AristaDirigida<int>> camino = d.camino(w);
+            while (!camino.empty())
+            {
+                AristaDirigida<int> arista = camino.front(); camino.pop_front();
+                cout << arista.desde() + 1 << " -> ";
+                if (camino.empty())
+                    cout << arista.hasta() + 1;
+            }
+            cout << "\n";
+        }
+        
     }
-
+    cout << "--\n";
     return true;
 }
 
