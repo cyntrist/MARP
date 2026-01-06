@@ -5,6 +5,7 @@
  *
  *@ </authors> */
 
+#include <algorithm>
 #include <deque>
 #include <iostream>
 #include <fstream>
@@ -47,25 +48,27 @@ public:
 	}
 
 	Valor distancia(int v) const { return dist[v]; }
-	deque<AristaDirigida<Valor>> camino(int v) const
+	deque<AristaDirigida<Valor>> camino(int v)
 	{
-		deque<AristaDirigida<Valor>> cam;
+		deque<AristaDirigida<Valor>> camino;
 		AristaDirigida<Valor> a;
 		for (a = ulti[v]; a.desde() != origen; a = ulti[a.desde()])
-			cam.push_front(a);
-		cam.push_front(a);
-		return cam;
+			camino.push_front(a);
+		camino.push_front(a);
+		return camino;
 	}
 private:
-	const Valor INF = numeric_limits<Valor>::max();
 	int origen;
+	const Valor INF = numeric_limits<Valor>::max();
 	vector<Valor> dist;
 	vector<AristaDirigida<Valor>> ulti;
 	IndexPQ<Valor> pq;
 
+
 	void relajar(AristaDirigida<Valor> a)
 	{
 		int v = a.desde(), w = a.hasta();
+		if (dist[v] == INF) return;
 		if (dist[w] > dist[v] + a.valor())
 		{
 			dist[w] = dist[v] + a.valor();
@@ -82,7 +85,7 @@ bool resuelveCaso() {
 	if (!std::cin)  // fin de la entrada
 		return false;
 
-	DigrafoValorado<int> g(N);
+	DigrafoValorado<long long> g(N);
 	while (M--)
 	{
 		int v, w, p;
@@ -95,24 +98,19 @@ bool resuelveCaso() {
 	Dijkstra dN(g, 0);
 	Dijkstra dS(g, N - 1);
 
-	vector<int> deltas(N);
-	int coste = 0;
+	vector<long long> deltas(N - 2);
+	long long coste = 0;
 	for (int i = 1; i < N - 1; ++i)
 	{
-		cout << dN.distancia(i);
-		int dif = dN.distancia(i) - dS.distancia(i);
-		if (dif < 0)
-		{
-			coste += dS.distancia(i);
-		}
-		else
-		{
-			coste += dN.distancia(i);
-		}
-		//deltas.push_back();
+		coste += dN.distancia(i);
+		deltas[i-1] = (dS.distancia(i) - dN.distancia(i));
 	}
+	ranges::sort(deltas);
 
-	cout << coste << '\n';
+	for (int i = 0; i < (N - 2)/2; ++i)
+		coste += deltas[i];
+
+	cout << coste * 2 << '\n';
 
 	return true;
 }
