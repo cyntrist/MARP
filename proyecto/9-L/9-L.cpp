@@ -46,7 +46,7 @@ public:
 		}
 	}
 
-	int distancia(int v) const { return dist[v]; }
+	Valor distancia(int v) const { return dist[v]; }
 	deque<AristaDirigida<Valor>> camino(int v)
 	{
 		deque<AristaDirigida<Valor>> camino;
