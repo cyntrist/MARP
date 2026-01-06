@@ -47,7 +47,7 @@ public:
 	}
 
 	Valor distancia(int v) const { return dist[v]; }
-	deque<AristaDirigida<Valor>> camino(int v)
+	deque<AristaDirigida<Valor>> camino(int v) const
 	{
 		deque<AristaDirigida<Valor>> cam;
 		AristaDirigida<Valor> a;
@@ -57,8 +57,8 @@ public:
 		return cam;
 	}
 private:
-	int origen;
 	const Valor INF = numeric_limits<Valor>::max();
+	int origen;
 	vector<Valor> dist;
 	vector<AristaDirigida<Valor>> ulti;
 	IndexPQ<Valor> pq;
