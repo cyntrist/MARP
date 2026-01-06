@@ -57,12 +57,12 @@ public:
 		return camino;
 	}
 private:
+	int origen;
+	const Valor INF = numeric_limits<Valor>::max();
 	vector<Valor> dist;
 	vector<AristaDirigida<Valor>> ulti;
 	IndexPQ<Valor> pq;
 
-	int origen;
-	const int INF = numeric_limits<Valor>::max();
 
 	void relajar(AristaDirigida<Valor> a)
 	{
