@@ -68,7 +68,8 @@ private:
         int v = a.desde(), w = a.hasta();
         if (dist[w] > dist[v] + a.valor()) 
         {
-            dist[w] = dist[v] + a.valor(); ulti[w] = a;
+            dist[w] = dist[v] + a.valor(); 
+        	ulti[w] = a;
             pq.update(w, dist[w]);
         }
     }
