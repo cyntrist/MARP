@@ -49,12 +49,12 @@ public:
 	Valor distancia(int v) const { return dist[v]; }
 	deque<AristaDirigida<Valor>> camino(int v)
 	{
-		deque<AristaDirigida<Valor>> camino;
+		deque<AristaDirigida<Valor>> cam;
 		AristaDirigida<Valor> a;
 		for (a = ulti[v]; a.desde() != origen; a = ulti[a.desde()])
-			camino.push_front(a);
-		camino.push_front(a);
-		return camino;
+			cam.push_front(a);
+		cam.push_front(a);
+		return cam;
 	}
 private:
 	int origen;
@@ -62,7 +62,6 @@ private:
 	vector<Valor> dist;
 	vector<AristaDirigida<Valor>> ulti;
 	IndexPQ<Valor> pq;
-
 
 	void relajar(AristaDirigida<Valor> a)
 	{
