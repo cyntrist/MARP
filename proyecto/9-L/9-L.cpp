@@ -103,7 +103,7 @@ bool resuelveCaso() {
 	for (int i = 1; i < N - 1; ++i)
 	{
 		coste += dN.distancia(i);
-		deltas[i-1] = (dS.distancia(i) - dN.distancia(i));
+		deltas[i - 1] = dS.distancia(i) - dN.distancia(i);
 	}
 	ranges::sort(deltas);
 
