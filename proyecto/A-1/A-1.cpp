@@ -29,19 +29,31 @@ using namespace std;
 // número total de maneras de conseguir esa cuerda, 
 int total(vector<int> const& longs, int N, int L)
 {
-	
+	return 1;
 } 
 
 // mínimo número posible de cuerdas a utilizar
-int minimo(vector<int> const& longs, int N, int L)
+EntInf minimo(vector<int> const& longs, int N, int L)
 {
-
+	Matriz<EntInf> cuerdas(N + 1, L + 1, Infinito);
+	for (int i = 1; i < N; ++i)
+	{
+		cuerdas[i][0] = 0;
+		for (int j = 1; j < L; ++j)
+		{
+			if (longs[i - 1] > j)
+				cuerdas[i][j] = cuerdas[i - 1][j];
+			else
+				cuerdas[i][j] = min(cuerdas[i - 1][j], cuerdas[i][j - longs[i - 1]] + 1);
+		}
+	}
+	return cuerdas[N][L];
 }
 
 // mínimo coste necesario
 int coste(vector<int> const& longs, vector<int> const& costs, int N, int L)
 {
-
+	return 0;
 }
 
 bool resuelveCaso() {
@@ -64,9 +76,9 @@ bool resuelveCaso() {
 	int t = total(longitudes, N, L);
 	if (t > 0)
 	{
-		int m = minimo(longitudes, N, L);
+		EntInf m = minimo(longitudes, N, L);
 		int c = coste(longitudes, costes, N, L);
-		cout << "SI " << t << " " << m << " " << c;
+		cout << "SI " << t << " " << m << " " << c << '\n';
 	}
 	else cout << "NO\n";
 
