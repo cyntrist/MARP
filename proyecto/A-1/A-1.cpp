@@ -9,6 +9,8 @@
 #include <fstream>
 #include "Matriz.h"
 #include "EnterosInf.h"
+#include <vector>
+#include <algorithm>
 
 using namespace std;
 
@@ -27,7 +29,7 @@ using namespace std;
  //@ <answer>
 
 // número total de maneras de conseguir esa cuerda, 
-EntInf total(vector<int> const& longs, int L)
+EntInf total(vector<int> const& longs, int const L)
 {
 	int N = longs.size();
 	Matriz<EntInf> cuerdas(N + 1, L + 1, 0);
@@ -47,7 +49,7 @@ EntInf total(vector<int> const& longs, int L)
 } 
 
 // mínimo número posible de cuerdas a utilizar
-EntInf minimo(vector<int> const& longs, int L)
+EntInf minimo(vector<int> const& longs, int const L)
 {
 	int N = longs.size();
 	Matriz<EntInf> cuerdas(N + 1, L + 1, Infinito);
@@ -60,14 +62,17 @@ EntInf minimo(vector<int> const& longs, int L)
 			if (longs[i - 1] > j)
 				cuerdas[i][j] = cuerdas[i - 1][j];
 			else
-				cuerdas[i][j] = min(cuerdas[i - 1][j], cuerdas[i][j - longs[i - 1]] + 1);
+				cuerdas[i][j] = std::min(
+					cuerdas[i - 1][j], 
+					cuerdas[i - 1][j - longs[i - 1]] + 1
+				);
 		}
 	}
 	return cuerdas[N][L];
 }
 
 // mínimo coste necesario
-EntInf coste(vector<int> const& longs, vector<int> const& costs, int L)
+EntInf coste(vector<int> const& longs, vector<int> const& costs, int const L)
 {
 	int N = longs.size();
 	Matriz<EntInf> cuerdas(N + 1, L + 1, Infinito);
@@ -80,13 +85,51 @@ EntInf coste(vector<int> const& longs, vector<int> const& costs, int L)
 			if (longs[i - 1] > j)
 				cuerdas[i][j] = cuerdas[i - 1][j];
 			else
-				cuerdas[i][j] = min(
-					cuerdas[i][j - longs[i - 1]] + costs[i - 1],
+				cuerdas[i][j] = std::min(
+					cuerdas[i - 1][j - longs[i - 1]] + costs[i - 1],
 					cuerdas[i - 1][j]
 				);
 		}
 	}
 	return cuerdas[N][L];
+}
+//
+//EntInf total_optimizado(vector<int> const& longs, int const L)
+//{
+//	int N = longs.size();
+//	vector<EntInf> cuerdas(L + 1, 0);
+//	cuerdas[0] = 1;
+//	for (int i = 1; i <= N; ++i)
+//	{
+//		for (int j = L; j >= longs[i]; --j)
+//		{
+//			if (j < longs[i - 1])
+//				cuerdas[i] = cuerdas[i - 1][j];
+//			else
+//				cuerdas[i] = cuerdas[i - 1][j] + cuerdas[i - 1][j - longs[i - 1]];
+//		}
+//	}
+//	return cuerdas[N][L];
+//}
+
+EntInf minimo_optimizado(vector<int> const& longs, int const L)
+{
+	int N = longs.size();
+	vector<EntInf> cuerdas(L + 1, Infinito);
+	cuerdas[0] = 0;
+	for (int i = 1; i <= N; ++i)
+	{
+		for (int j = L; j >= longs[i - 1]; --j)
+		{
+			cuerdas[j] = min(cuerdas[j], cuerdas[j - longs[i - 1]] + 1);
+		}
+	}
+	return cuerdas[L];
+}
+
+EntInf coste_optimizado(vector<int> const& longs, vector<int> const& costs, int const L)
+{
+	return 0;
 }
 
 bool resuelveCaso() {
@@ -109,7 +152,7 @@ bool resuelveCaso() {
 	EntInf t = total(longitudes, L);
 	if (t > 0)
 	{
-		EntInf m = minimo(longitudes, L);
+		EntInf m = minimo_optimizado(longitudes, L);
 		EntInf c = coste(longitudes, costes, L);
 		cout << "SI " << t << " " << m << " " << c << '\n';
 	}
