@@ -30,20 +30,17 @@ using namespace std;
 EntInf total(vector<int> const& longs, int L)
 {
 	int N = longs.size();
-	Matriz<EntInf> cuerdas(N + 1, L + 1, -1);
-	cuerdas[0][0] = 0;
+	Matriz<EntInf> cuerdas(N + 1, L + 1, 0);
+	cuerdas[0][0] = 1;
 	for (int i = 1; i <= N; ++i)
 	{
-		cuerdas[i][0] = 0;
+		cuerdas[i][0] = 1;
 		for (int j = 1; j <= L; ++j)
 		{
-			if (longs[i - 1] > j)
+			if (j < longs[i - 1])
 				cuerdas[i][j] = cuerdas[i - 1][j];
 			else
-				cuerdas[i][j] = max(
-					cuerdas[i - 1][j] + cuerdas[i][j - longs[i - 1]],
-					cuerdas[i - 1][j] + 1
-				);
+				cuerdas[i][j] = cuerdas[i - 1][j] + cuerdas[i - 1][j - longs[i - 1]];
 		}
 	}
 	return cuerdas[N][L];
