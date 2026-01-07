@@ -27,19 +27,38 @@ using namespace std;
  //@ <answer>
 
 // número total de maneras de conseguir esa cuerda, 
-int total(vector<int> const& longs, int N, int L)
+EntInf total(vector<int> const& longs, int L)
 {
-	return 1;
+	int N = longs.size();
+	Matriz<EntInf> cuerdas(N + 1, L + 1, -1);
+	cuerdas[0][0] = 0;
+	for (int i = 1; i <= N; ++i)
+	{
+		cuerdas[i][0] = 0;
+		for (int j = 1; j <= L; ++j)
+		{
+			if (longs[i - 1] > j)
+				cuerdas[i][j] = cuerdas[i - 1][j];
+			else
+				cuerdas[i][j] = max(
+					cuerdas[i - 1][j] + cuerdas[i][j - longs[i - 1]],
+					cuerdas[i - 1][j] + 1
+				);
+		}
+	}
+	return cuerdas[N][L];
 } 
 
 // mínimo número posible de cuerdas a utilizar
-EntInf minimo(vector<int> const& longs, int N, int L)
+EntInf minimo(vector<int> const& longs, int L)
 {
+	int N = longs.size();
 	Matriz<EntInf> cuerdas(N + 1, L + 1, Infinito);
-	for (int i = 1; i < N; ++i)
+	cuerdas[0][0] = 0;
+	for (int i = 1; i <= N; ++i)
 	{
 		cuerdas[i][0] = 0;
-		for (int j = 1; j < L; ++j)
+		for (int j = 1; j <= L; ++j)
 		{
 			if (longs[i - 1] > j)
 				cuerdas[i][j] = cuerdas[i - 1][j];
@@ -51,9 +70,26 @@ EntInf minimo(vector<int> const& longs, int N, int L)
 }
 
 // mínimo coste necesario
-int coste(vector<int> const& longs, vector<int> const& costs, int N, int L)
+EntInf coste(vector<int> const& longs, vector<int> const& costs, int L)
 {
-	return 0;
+	int N = longs.size();
+	Matriz<EntInf> cuerdas(N + 1, L + 1, Infinito);
+	cuerdas[0][0] = 0;
+	for (int i = 1; i <= N; ++i)
+	{
+		cuerdas[i][0] = 0;
+		for (int j = 1; j <= L; ++j)
+		{
+			if (longs[i - 1] > j)
+				cuerdas[i][j] = cuerdas[i - 1][j];
+			else
+				cuerdas[i][j] = min(
+					cuerdas[i][j - longs[i - 1]] + costs[i - 1],
+					cuerdas[i - 1][j]
+				);
+		}
+	}
+	return cuerdas[N][L];
 }
 
 bool resuelveCaso() {
@@ -73,11 +109,11 @@ bool resuelveCaso() {
 		costes[i] = cost;
 	}
 
-	int t = total(longitudes, N, L);
+	EntInf t = total(longitudes, L);
 	if (t > 0)
 	{
-		EntInf m = minimo(longitudes, N, L);
-		int c = coste(longitudes, costes, N, L);
+		EntInf m = minimo(longitudes, L);
+		EntInf c = coste(longitudes, costes, L);
 		cout << "SI " << t << " " << m << " " << c << '\n';
 	}
 	else cout << "NO\n";
