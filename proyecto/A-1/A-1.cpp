@@ -27,11 +27,22 @@ using namespace std;
  //@ <answer>
 
 // número total de maneras de conseguir esa cuerda, 
-int total(vector<int> longs, int k, int c) 
+int total(vector<int> const& longs, int N, int L)
+{
+	
+} 
 
 // mínimo número posible de cuerdas a utilizar
+int minimo(vector<int> const& longs, int N, int L)
+{
+
+}
 
 // mínimo coste necesario
+int coste(vector<int> const& longs, vector<int> const& costs, int N, int L)
+{
+
+}
 
 bool resuelveCaso() {
 	int N, L;
@@ -50,7 +61,14 @@ bool resuelveCaso() {
 		costes[i] = cost;
 	}
 
-	int total = total(longitudes, N, L);
+	int t = total(longitudes, N, L);
+	if (t > 0)
+	{
+		int m = minimo(longitudes, N, L);
+		int c = coste(longitudes, costes, N, L);
+		cout << "SI " << t << " " << m << " " << c;
+	}
+	else cout << "NO\n";
 
 	return true;
 }
