@@ -93,24 +93,21 @@ EntInf coste(vector<int> const& longs, vector<int> const& costs, int const L)
 	}
 	return cuerdas[N][L];
 }
-//
-//EntInf total_optimizado(vector<int> const& longs, int const L)
-//{
-//	int N = longs.size();
-//	vector<EntInf> cuerdas(L + 1, 0);
-//	cuerdas[0] = 1;
-//	for (int i = 1; i <= N; ++i)
-//	{
-//		for (int j = L; j >= longs[i]; --j)
-//		{
-//			if (j < longs[i - 1])
-//				cuerdas[i] = cuerdas[i - 1][j];
-//			else
-//				cuerdas[i] = cuerdas[i - 1][j] + cuerdas[i - 1][j - longs[i - 1]];
-//		}
-//	}
-//	return cuerdas[N][L];
-//}
+
+EntInf total_optimizado(vector<int> const& longs, int const L)
+{
+	int N = longs.size();
+	vector<EntInf> cuerdas(L + 1, 0);
+	cuerdas[0] = 1;
+	for (int i = 1; i <= N; ++i)
+	{
+		for (int j = L; j >= longs[i - 1]; --j)
+		{
+			cuerdas[j] = cuerdas[j] + cuerdas[j - longs[i - 1]];
+		}
+	}
+	return cuerdas[L];
+}
 
 EntInf minimo_optimizado(vector<int> const& longs, int const L)
 {
@@ -121,7 +118,10 @@ EntInf minimo_optimizado(vector<int> const& longs, int const L)
 	{
 		for (int j = L; j >= longs[i - 1]; --j)
 		{
-			cuerdas[j] = min(cuerdas[j], cuerdas[j - longs[i - 1]] + 1);
+			cuerdas[j] = std::min(
+				cuerdas[j], 
+				cuerdas[j - longs[i - 1]] + 1
+			);
 		}
 	}
 	return cuerdas[L];
@@ -129,7 +129,20 @@ EntInf minimo_optimizado(vector<int> const& longs, int const L)
 
 EntInf coste_optimizado(vector<int> const& longs, vector<int> const& costs, int const L)
 {
-	return 0;
+	int N = longs.size();
+	vector<EntInf> cuerdas(L + 1, 1e9);
+	cuerdas[0] = 0;
+	for (int i = 1; i <= N; ++i)
+	{
+		for (int j = L; j >= longs[i - 1]; --j)
+		{
+			cuerdas[j] = std::min(
+					cuerdas[j - longs[i - 1]] + costs[i - 1],
+					cuerdas[j]
+				);
+		}
+	}
+	return cuerdas[L];
 }
 
 bool resuelveCaso() {
@@ -149,11 +162,11 @@ bool resuelveCaso() {
 		costes[i] = cost;
 	}
 
-	EntInf t = total(longitudes, L);
+	EntInf t = total_optimizado(longitudes, L);
 	if (t > 0)
 	{
 		EntInf m = minimo_optimizado(longitudes, L);
-		EntInf c = coste(longitudes, costes, L);
+		EntInf c = coste_optimizado(longitudes, costes, L);
 		cout << "SI " << t << " " << m << " " << c << '\n';
 	}
 	else cout << "NO\n";
