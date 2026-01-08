@@ -91,7 +91,7 @@ vector<int> minimo_optimizado(vector<int> const& sectores, int P)
 		int i = N, j = P;
 		while (j > 0 && i > 0)
 		{
-			if (sectores[i - 1] > j || dardos[j] == dardos[j - sectores[i - 1]] + 1)
+			if (sectores[i - 1] <= j && dardos[j] == dardos[j - sectores[i - 1]] + 1)
 			{
 				sol.push_back(sectores[i - 1]);
 				j -= sectores[i - 1];
