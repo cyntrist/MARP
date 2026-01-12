@@ -26,7 +26,7 @@ using namespace std;
  //@ <answer>
 
 // DESCENDENTE
-int min_ins_desc_rec(string& s, int l, int h, vector<vector<int>>& memo) 
+int min_ins_desc_rec(string& s, int l, int h, Matriz<int>& memo) 
 {
 
 	// Base case
@@ -49,19 +49,18 @@ int min_ins_desc_rec(string& s, int l, int h, vector<vector<int>>& memo)
 int min_ins_desc(string& s) 
 {
 	int n = s.length();
-	vector<vector<int>> memo(n, vector<int>(n, -1));
+	Matriz<int> memo(n, n, -1);
 
 	return min_ins_desc_rec(s, 0, n - 1, memo);
 }
 
 // ASCENDENTE
-int min_ins_asc(string& s) 
+int min_ins_asc(string& s, Matriz<int>& dp)
 {
 	int n = s.size();
 
 	// dp[i][j] will store the minimum number of insertions needed
 	// to convert str[i..j] into a palindrome
-	vector<vector<int>> dp(n, vector<int>(n, 0));
 
 	// len is the length of the substring
 	for (int len = 2; len <= n; len++) {
@@ -86,6 +85,40 @@ int min_ins_asc(string& s)
 	// The result is in dp[0][n-1] which 
 	// represents the entire string
 	return dp[0][n - 1];
+}
+
+string reconstruir_palindromo(string const& s, Matriz<int> const& dp)
+{
+	int l = 0, h = s.size() - 1;
+	string left = "", right = "";
+
+	while (l <= h) {
+		if (l == h) {
+			left += s[l];   // carácter central
+			break;
+		}
+
+		if (s[l] == s[h]) {
+			left += s[l];
+			right = s[h] + right;
+			l++;
+			h--;
+		}
+		else if (dp[l + 1][h] <= dp[l][h - 1]) {
+			// insertamos s[l] al final
+			left += s[l];
+			right = s[l] + right;
+			l++;
+		}
+		else {
+			// insertamos s[h] al principio
+			left += s[h];
+			right = s[h] + right;
+			h--;
+		}
+	}
+
+	return left + right;
 }
 
 // OPTIMIZADA ASCENDENTE
@@ -129,7 +162,9 @@ bool resuelveCaso() {
 	if (!std::cin)  // fin de la entrada
 		return false;
 
-	cout << min_ins_asc_opt(entrada) << '\n';
+	int n = entrada.size();
+	Matriz<int> m(n, n, 0);
+	cout << min_ins_asc(entrada, m) << " " << reconstruir_palindromo(entrada, m) << '\n';
 
 	return true;
 }
