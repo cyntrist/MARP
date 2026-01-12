@@ -26,7 +26,7 @@ using namespace std;
  //@ <answer>
 
 // DESCENDENTE
-int min_ins_desc_rec(string& s, int l, int h, Matriz<int>& memo) 
+int min_ins_desc_rec(string& s, int l, int h, vector<vector<int>>& memo) 
 {
 
 	// Base case
@@ -49,7 +49,7 @@ int min_ins_desc_rec(string& s, int l, int h, Matriz<int>& memo)
 int min_ins_desc(string& s) 
 {
 	int n = s.length();
-	Matriz<int> memo(n, vector<int>(n, -1));
+	vector<vector<int>> memo(n, vector<int>(n, -1));
 
 	return min_ins_desc_rec(s, 0, n - 1, memo);
 }
@@ -61,7 +61,7 @@ int min_ins_asc(string& s)
 
 	// dp[i][j] will store the minimum number of insertions needed
 	// to convert str[i..j] into a palindrome
-	Matriz<int> dp(n, 0);
+	vector<vector<int>> dp(n, vector<int>(n, 0));
 
 	// len is the length of the substring
 	for (int len = 2; len <= n; len++) {
