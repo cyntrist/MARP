@@ -5,9 +5,11 @@
  *
  *@ </authors> */
 
+#include <algorithm>
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <limits>
 #include "Matriz.h"
 using namespace std;
 
@@ -28,25 +30,32 @@ constexpr int INF = std::numeric_limits<int>::max();
 
 int unir_pdfs(vector<int> const& pdfs) { 
 	int n = pdfs.size();
-	Matriz matrices(n + 1, n + 1, 0); P = Matriz(n + 1, n + 1, 0);
-	for (int d = 1; d <= n - 1; ++d) // recorre diagonales
-		for (int i = 1; i <= n - d; ++i) { // recorre elementos de diagonal
-			int j = i + d;
-			matrices[i][j] = INF;
+
+	vector pref(n + 1, 0);
+	for (int i = 1; i <= n; ++i)
+		pref[i] = pref[i - 1] + pdfs[i - 1];
+
+	Matriz m(n + 1, n + 1, 0); 
+	for (int len = 1; len < n; ++len) // recorre diagonales
+	{
+		for (int i = 1; i + len <= n; ++i) { // recorre elementos de diagonal
+			int j = i + len;
+			m[i][j] = INF;
 			for (int k = i; k <= j - 1; ++k) {
-				int temp = matrices[i][k] + matrices[k + 1][j] + D[i - 1] * D[k] * D[j];
-				if (temp < matrices[i][j]) { // es mejor partir por k
-					matrices[i][j] = temp; P[i][j] = k;
-				}
+				m[i][j] = std::min(
+					m[i][k] + m[k + 1][j] + pref[j] - pref[i - 1],
+					m[i][j]
+				);
 			}
 		}
-	return matrices[1][n];
+	}
+	return m[1][n];
 }
 
 bool resuelveCaso() {
 	int N;
 	cin >> N;	
-	if (!std::cin)  // fin de la entrada
+	if (N == 0)  // fin de la entrada
 		return false;
 	vector<int> pdfs(N);
 	for (int i = 0; i < N; ++i)
