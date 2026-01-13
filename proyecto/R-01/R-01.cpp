@@ -32,40 +32,6 @@ using namespace std;
  //@ <answer>
 
 template <typename Valor>
-class Dijkstra {
-public:
-	Dijkstra(GrafoValorado<Valor> const& g, int orig) : origen(orig),
-		_max(g.V(), INF), ulti(g.V()), pq(g.V()) {
-		_max[origen] = 0;
-		pq.push(origen, 0);
-		while (!pq.empty()) {
-			int v = pq.top().elem; pq.pop();
-			for (auto a : g.ady(v))
-				relajar(a, v);
-		}
-	}
-	bool hayCamino(int v) const { return _max[v] != INF; }
-	Valor maximo(int v) const { return _max[v]; }
-private:
-	const Valor INF = std::numeric_limits<Valor>::max();
-	int origen;
-	std::vector<Valor> _max;
-	std::vector<Arista<Valor>> ulti;
-	IndexPQ<Valor> pq;
-
-	void relajar(Arista<Valor> a, int v) {
-		int w = a.otro(v);
-		Valor nuevo = max(_max[v], a.valor());
-		if (nuevo < _max[w]) {
-			_max[w] = nuevo;
-			pq.update(w, _max[w]);
-		}
-	}
-};
-
-
-
-template <typename Valor>
 class ARM_Kruskal {
 	ConjuntosDisjuntos cjtos;
 	Valor _maximo;
@@ -120,16 +86,6 @@ bool resuelveCaso() {
 	{
 		cout << "IMPOSIBLE\n";
 	}
-	//Dijkstra d(g, P);
-	//if (d.hayCamino(T))
-	//{
-	//	cout << d.maximo(T) << '\n';
-	//}
-	//else
-	//{
-	//	cout << "IMPOSIBLE\n";
-	//}
-	//cout << "---\n";
 
 	return true;
 }
