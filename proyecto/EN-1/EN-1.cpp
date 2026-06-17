@@ -1,7 +1,7 @@
-
+Ôªø
 /*@ <authors>
  *
- * Nombre, apellidos y usuario del juez (TAISXXX) de los autores de la soluciÛn.
+ * Nombre, apellidos y usuario del juez (TAISXXX) de los autores de la soluci√≥n.
  *
  *@ </authors> */
 
@@ -14,19 +14,28 @@ using namespace std;
 
 /*@ <answer>
 
- Escribe aquÌ un comentario general sobre la soluciÛn, explicando cÛmo
- se resuelve el problema y cu·l es el coste de la soluciÛn, en funciÛn
- del tamaÒo del problema.
+Lo que he hecho ha sido una combinaci√≥n de b√∫squeda de √≥rden topol√≥gico para encontrar un camino que respete las aristas del grafo y, a√±adi√©ndole el vector apilado, una detecci√≥n de ciclos por si el grafo fuera de recuerdos incompatibles. 
+
+El grafo viene dado de esta manera: los v√©rtices son las ciudades del album de recuerdos (V) y las aristas son los recuerdos que los relacionan (A).
+
+De esta manera tenemos:
+	la deque _camino que se va actualizando tras cada iteraci√≥n del DFS con los v√©rtices en √≥rden v√°lido,
+	el vector visit para poder llevar a cabo el DFS de manera eficiente,
+	el vector apilado para detectar ciclos apilando vectores sobre √©l
+	y un booleano hayCiclo para poder parar el DFS si lo encuentra adem√°s de servir como getter.
+Coste: El coste de un DFS por definici√≥n es O(V + A), siendo V el n√∫mero de v√©rtices y A el de aristas de un grafo.
+
+Nuestro DFS cuenta con accesos constantes a vector y push_front por lo que no empeora el coste. Se hace un DFS por cada v√©rtice no visitado, por lo que el coste finalen tiempo en caso peor sigue siendo O(V + A), siendo V el n√∫mero de v√©rtices del grafo y el n√∫mero de ciudades y A los recuerdos y las aristas del grafo	  
 
  @ </answer> */
 
 using Camino = deque<int>; // para representar caminos
 class Recuerdos {
-	std::vector<bool> visit; // visit[v] = øse ha alcanzado a v en el dfs?
-	std::vector<int> ant; // ant[v] = vÈrtice anterior en el camino a v
-	std::vector<bool> apilado; // apilado[v] = øest· el vÈrtice v en la pila?
+	std::vector<bool> visit; // visit[v] = ¬øse ha alcanzado a v en el dfs?
+	std::vector<int> ant; // ant[v] = v√©rtice anterior en el camino a v
+	std::vector<bool> apilado; // apilado[v] = ¬øest√° el v√©rtice v en la pila?
 	bool hayciclo;
-	std::deque<int> _orden; // ordenaciÛn topolÛgica
+	std::deque<int> _orden; // ordenaci√≥n topol√≥gica
 public:
 	Recuerdos(Digrafo const& g) : visit(g.V(), false), ant(g.V()),
 		apilado(g.V(), false), hayciclo(false) {
@@ -41,7 +50,7 @@ public:
 		for (int w : g.ady(v)) {
 			if (hayciclo) // si hemos encontrado un ciclo terminamos
 				return;
-			if (!visit[w]) { // encontrado un nuevo vÈrtice, seguimos
+			if (!visit[w]) { // encontrado un nuevo v√©rtice, seguimos
 				ant[w] = v; dfs(g, w);
 			}
 			else if (apilado[w]) { // hemos detectado un ciclo
@@ -51,7 +60,7 @@ public:
 		_orden.push_front(v);
 		apilado[v] = false;
 	}
-	// devuelve la ordenaciÛn topolÛgica
+	// devuelve la ordenaci√≥n topol√≥gica
 	Camino const& orden() const {
 		return _orden;
 	}
@@ -59,7 +68,7 @@ public:
 
 
  // ================================================================
- // Escribe el cÛdigo completo de tu soluciÛn aquÌ debajo
+ // Escribe el c√≥digo completo de tu soluci√≥n aqu√≠ debajo
  // ================================================================
  //@ <answer>
 
@@ -88,7 +97,7 @@ bool resuelveCaso() {
 	// viable?
 	bool valido = !solucion.hayCiclo();
 
-	// escribir la soluciÛn
+	// escribir la soluci√≥n
 	if (valido)
 	{
 		std::cout << "SI ";
@@ -109,7 +118,7 @@ bool resuelveCaso() {
 }
 
 //@ </answer>
-//  Lo que se escriba dejado de esta lÌnea ya no forma parte de la soluciÛn.
+//  Lo que se escriba dejado de esta l√≠nea ya no forma parte de la soluci√≥n.
 
 int main() {
 	// ajustes para que cin extraiga directamente de un fichero
