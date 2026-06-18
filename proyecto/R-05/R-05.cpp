@@ -31,25 +31,20 @@ using namespace std;
 // m[i][j] = combinaciones posibles de conseguir el número j con números hasta el i
 int combinaciones(int k, int s)
 {
-	Matriz m(k + 1, s + 1, 0);
+	//Matriz m(k + 1, s + 1, 0);
+	std::vector<int> m(s + 1, 0);
 
-	for (int i = 0; i <= k; ++i)
-		m[i][0] = 1; // solo 1 unica manera de conseguir 0
+	m[0] = 1; // solo 1 unica manera de conseguir 0
 
 	for (int i = 1; i <= k; ++i)
 	{
-		for (int j = 1; j <= s; ++j)
+		for (int j = i; j <= s; ++j)
 		{
-			// no usar i
-			m[i][j] = m[i - 1][j];
-
-			// usar i
-			if (j >= i)
-				m[i][j] += m[i][j - i];
+			m[j] += m[j - i];
 		}
 	}
 
-	return m[k][s];
+	return m[s];
 }
 
 void resuelveCaso() {
