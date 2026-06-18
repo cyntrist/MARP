@@ -79,7 +79,8 @@ int bollos(vector<Chorizo> const& objetos, int M) {
 // coste espacial: N * masa
 int bollos_asc(vector<Chorizo> const& obj, int N, int masa)
 {
-	Matriz m(N + 1, masa + 1, 0);
+	std::vector anterior(masa + 1, 0);
+	std::vector actual(masa + 1, 0);
 
 	for (int i = 1; i <= N; ++i)
 	{
@@ -87,7 +88,7 @@ int bollos_asc(vector<Chorizo> const& obj, int N, int masa)
 
 		for (int j = 0; j <= masa; ++j)
 		{
-			m[i][j] = m[i - 1][j];
+			actual[j] = anterior[j];
 
 			int k_max = std::min(c.bollos_posibles, j / c.masa_necesaria);
 
@@ -97,14 +98,16 @@ int bollos_asc(vector<Chorizo> const& obj, int N, int masa)
 
 				if (masa_usada <= j)
 				{
-					m[i][j] = std::max(m[i][j], m[i - 1][j - masa_usada] + k * c.valor);
+					actual[j] = std::max(actual[j], anterior[j - masa_usada] + k * c.valor);
 				}
 
 			}
 		}
+
+		anterior = actual;
 	}
 
-	return m[N][masa];
+	return actual[masa];
 }
 
 bool resuelveCaso() {
