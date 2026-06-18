@@ -1,19 +1,101 @@
-// R-07.cpp : Este archivo contiene la función "main". La ejecución del programa comienza y termina ahí.
-//
+
+/*@ <authors>
+ *
+ * Nombre, apellidos y usuario del juez (TAISXXX) de los autores de la solución.
+ *
+ *@ </authors> */
 
 #include <iostream>
+#include <fstream>
+#include <vector>
+#include <algorithm>
+using namespace std;
 
-int main()
+#include "Matriz.h"
+
+/*@ <answer>
+
+ Escribe aquí un comentario general sobre la solución, explicando cómo
+ se resuelve el problema y cuál es el coste de la solución, en función
+ del tamaño del problema.
+
+ @ </answer> */
+
+
+ // ================================================================
+ // Escribe el código completo de tu solución aquí debajo
+ // ================================================================
+ //@ <answer>
+
+
+// m[i][j] = número de combinaciones para llegar a la casilla i, j desde la casilla 1, 1
+int combinaciones(const Matriz<int>& M)
 {
-    std::cout << "Hello World!\n";
+	const int F = M.numfils(), C = M.numcols();
+	Matriz m(F + 1, C + 1, 0);
+
+	m[1][1] = 1;
+
+	for (int i = 0; i <= F; ++i)
+	{
+		for (int j = 0; j <= C; ++j)
+		{
+			int formas = m[i][j];
+
+			if (formas > 0) // si se puede llegar siquiera a esta casilla
+			{
+				int valor = M[i - 1][j - 1];
+				
+				if (i + valor <= F) // para no salirse
+					m[i + valor][j] += formas;
+				if (j + valor <= C)
+					m[i][j + valor] += formas;
+			}
+		}
+	}
+
+	return m[F][C];
 }
 
-// Ejecutar programa: Ctrl + F5 o menú Depurar > Iniciar sin depurar
-// Depurar programa: F5 o menú Depurar > Iniciar depuración
+bool resuelveCaso() {
+	// leer los datos de la entrada
+	int n = 0, m = 0;
+	std::cin >> n >> m;
 
-// Sugerencias para primeros pasos: 1. Use la ventana del Explorador de soluciones para agregar y administrar archivos
-//   2. Use la ventana de Team Explorer para conectar con el control de código fuente
-//   3. Use la ventana de salida para ver la salida de compilación y otros mensajes
-//   4. Use la ventana Lista de errores para ver los errores
-//   5. Vaya a Proyecto > Agregar nuevo elemento para crear nuevos archivos de código, o a Proyecto > Agregar elemento existente para agregar archivos de código existentes al proyecto
-//   6. En el futuro, para volver a abrir este proyecto, vaya a Archivo > Abrir > Proyecto y seleccione el archivo .sln
+	if (!std::cin)  // fin de la entrada
+		return false;
+
+	// resolver el caso posiblemente llamando a otras funciones
+	Matriz<int> M(n, m);
+	for (int i = 0; i < n; ++i)
+		for (int j = 0; j < m; ++j)
+			std::cin >> M[i][j];
+
+	// escribir la solución
+	std::cout << combinaciones(M) << '\n';
+
+	return true;
+}
+
+//@ </answer>
+//  Lo que se escriba dejado de esta línea ya no forma parte de la solución.
+
+int main() {
+	// ajustes para que cin extraiga directamente de un fichero
+#ifndef DOMJUDGE
+	std::ifstream in("casos.txt");
+	if (!in.is_open())
+		std::cout << "Error: no se ha podido abrir el archivo de entrada." << std::endl;
+	auto cinbuf = std::cin.rdbuf(in.rdbuf());
+#endif
+
+	while (resuelveCaso());
+
+	// para dejar todo como estaba al principio
+#ifndef DOMJUDGE
+	std::cin.rdbuf(cinbuf);
+	//std::cout << "Pulsa Intro para salir..." << std::flush;
+	//std::cin.get();
+#endif
+	return 0;
+}
