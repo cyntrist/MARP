@@ -89,7 +89,7 @@ int bollos_asc(vector<Chorizo> const& obj, int N, int masa)
 		{
 			m[i][j] = m[i - 1][j];
 
-			int k_max = c.bollos_posibles;
+			int k_max = std::min(c.bollos_posibles, j / c.masa_necesaria);
 
 			for (int k = 0; k <= k_max; ++k)
 			{
