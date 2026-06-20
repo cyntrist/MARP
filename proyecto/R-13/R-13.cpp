@@ -19,7 +19,7 @@ using namespace std;
 /*@ <answer>
 
  Escribe aquí un comentario general sobre la solución, explicando cómo
- se resuelve el problema y cuál es el coste de la solución, en función
+ se resuelve el problema y cuál es el costes de la solución, en función
  del tamaño del problema.
 
  @ </answer> */
@@ -39,13 +39,13 @@ struct Bombilla
 };
 
 // mochila no acotada ascendete
-// m[i][j] = coste mínimo de conseguir la potencia j con bombillas hasta i
-int coste(int N, int M, const std::vector<Bombilla>& bombillas)
+// m[i][j] = costes mínimo de conseguir la potencia j con bombillas hasta i
+Matriz<int> costes(int N, int M, const std::vector<Bombilla>& bombillas)
 {
 	Matriz m(N + 1, M + 1, INF);
 
 	for (int i = 0; i <= N; ++i)
-		m[i][0] = 1;
+		m[i][0] = 0;
 
 	for (int i = 1; i <= N; ++i)
 	{
@@ -60,7 +60,7 @@ int coste(int N, int M, const std::vector<Bombilla>& bombillas)
 		}
 	}
 
-	return m[N][M];
+	return m;
 }
 
 bool resuelveCaso() {
@@ -80,10 +80,20 @@ bool resuelveCaso() {
 		std::cin >> b.coste;
 
 	// escribir la solución
-	auto c = coste(N, PMax, bombillas);
-	std::cout << (c != INF ? std::to_string(c) : "IMPOSIBLE") << '\n';
+	auto c = costes(N, PMax, bombillas);
 
-	// reconstruccion
+	int mejor_coste = INF;
+	int mejor_potencia = INF;
+	for (int p = PMin; p <= PMax; ++p)
+	{
+		if (mejor_coste > c[N][p])
+		{
+			mejor_coste = c[N][p];
+			mejor_potencia = p;
+		}
+	}
+
+	std::cout << (mejor_coste != INF ? std::to_string(mejor_coste) + ' ' + std::to_string(mejor_potencia) : "IMPOSIBLE") << '\n';
 
 	return true;
 }
