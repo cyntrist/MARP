@@ -40,23 +40,19 @@ struct Bombilla
 
 // mochila no acotada ascendete
 // m[i][j] = costes mínimo de conseguir la potencia j con bombillas hasta i
-Matriz<int> costes(int N, int M, const std::vector<Bombilla>& bombillas)
+std::vector<int> costes(int N, int M, const std::vector<Bombilla>& bombillas)
 {
-	Matriz m(N + 1, M + 1, INF);
+	std::vector m(M + 1, INF);
 
 	for (int i = 0; i <= N; ++i)
-		m[i][0] = 0;
+		m[0] = 0;
 
-	for (int i = 1; i <= N; ++i)
+	for (const auto b : bombillas)
 	{
-		const auto& b = bombillas[i - 1];
-		for (int j = 1; j <= M; ++j)
+		for (int j = b.potencia; j <= M; ++j)
 		{
-			// no usar esa bombilla
-			m[i][j] = m[i - 1][j];
-
-			if (j >= b.potencia && m[i][j - b.potencia] != INF)
-				m[i][j] = std::min(m[i][j], m[i][j - b.potencia] + b.coste);
+			if (j >= b.potencia && m[j - b.potencia] != INF)
+				m[j] = std::min(m[j], m[j - b.potencia] + b.coste);
 		}
 	}
 
@@ -86,9 +82,9 @@ bool resuelveCaso() {
 	int mejor_potencia = INF;
 	for (int p = PMin; p <= PMax; ++p)
 	{
-		if (mejor_coste > c[N][p])
+		if (mejor_coste > c[p])
 		{
-			mejor_coste = c[N][p];
+			mejor_coste = c[p];
 			mejor_potencia = p;
 		}
 	}
