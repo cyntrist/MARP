@@ -5,6 +5,7 @@
  *
  *@ </authors> */
 
+#include <algorithm>
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -29,7 +30,7 @@ using namespace std;
 
 bool dia_bueno(std::vector<int> const& frutas, int i, int j)
 {
-	return frutas[i] != 0 && frutas[i] == frutas[j];
+	return i < frutas.size() && j < frutas.size() && frutas[i] != 0 && frutas[i] == frutas[j];
 }
 
 int veces_descendente(std::vector<int> const& frutas, int i, int j, Matriz<int>& veces) {
@@ -45,23 +46,37 @@ int veces_descendente(std::vector<int> const& frutas, int i, int j, Matriz<int>&
 			int o2 = veces_descendente(frutas, i + 1, j - 1, veces) + dia_bueno(frutas, i, j);
 			int o3 = veces_descendente(frutas, i, j - 2, veces) + dia_bueno(frutas, j - 1, j);
 
-			res = std::max(o1, std::max(o2, o3));
+			res = std::max({o1, o2, o3});
 		}
 	}
 	return res;
 }
 
-int veces_ascendente(std::vector<int> const& frutas, int I, int J)
+int veces_ascendente(std::vector<int> const& frutas)
 {
-	Matriz<int> veces(I + 1, J + 1, 0);
-	for (int i = 0; i <= I; ++i)
+	int N = frutas.size();
+	Matriz<int> veces(N, N, 0);
+	for (int longitud = 2; longitud <= N; longitud += 2)
 	{
-		for (int j = 0; j <= J; ++j)
+		for (int i = 0; i + longitud - 1 < N; ++i)
 		{
-			
+			int j = i + longitud - 1;
+			int o1 = dia_bueno(frutas, i, i + 1);
+			int o2 = dia_bueno(frutas, i, j);
+			int o3 = dia_bueno(frutas, j - 1, j);
+
+			if (i + 2 <= j)
+				o1 += veces[i + 2][j];
+			if (i + 1 <= j - 1)
+				o2 += veces[i + 1][j - 1];
+			if (i <= j - 2)	
+				o3 += veces[i][j - 2];
+
+			veces[i][j] = std::max({ o1, o2, o3 });
 		}
+		
 	}
-	return veces[I][J];
+	return veces[0][N - 1];
 }
 
 bool resuelveCaso() {
@@ -76,8 +91,8 @@ bool resuelveCaso() {
 		std::cin >> n;
 
 	Matriz veces(N, N, -1);
-	cout << veces_descendente(frutas, 0, N - 1, veces) << '\n'; 
-	//cout << veces_ascendente(frutas, 0, N - 1) << '\n';
+	//cout << veces_descendente(frutas, 0, N - 1, veces) << '\n'; 
+	cout << veces_ascendente(frutas) << '\n';
 
 	return true;
 }
