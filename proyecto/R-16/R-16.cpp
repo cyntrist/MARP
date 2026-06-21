@@ -55,28 +55,23 @@ int veces_descendente(std::vector<int> const& frutas, int i, int j, Matriz<int>&
 int veces_ascendente(std::vector<int> const& frutas)
 {
 	int N = frutas.size();
-	Matriz<int> veces(N, N, 0);
+	vector ant(N + 2, 0);
+	vector act(N + 2, 0);
 	for (int longitud = 2; longitud <= N; longitud += 2)
 	{
-		for (int i = 0; i + longitud - 1 < N; ++i)
+		int intervalos = N - longitud + 1; // diagonal
+		for (int i = 0; i < intervalos; ++i)
 		{
 			int j = i + longitud - 1;
-			int o1 = dia_bueno(frutas, i, i + 1);
-			int o2 = dia_bueno(frutas, i, j);
-			int o3 = dia_bueno(frutas, j - 1, j);
+			int o1 = dia_bueno(frutas, i, i + 1) + ant[i + 2];
+			int o2 = dia_bueno(frutas, i, j) + ant[i + 1];
+			int o3 = dia_bueno(frutas, j - 1, j) + ant[i];
 
-			if (i + 2 <= j)
-				o1 += veces[i + 2][j];
-			if (i + 1 <= j - 1)
-				o2 += veces[i + 1][j - 1];
-			if (i <= j - 2)	
-				o3 += veces[i][j - 2];
-
-			veces[i][j] = std::max({ o1, o2, o3 });
+			act[i] = std::max({ o1, o2, o3 });
 		}
-		
+		swap(act, ant);
 	}
-	return veces[0][N - 1];
+	return ant[0];
 }
 
 bool resuelveCaso() {
